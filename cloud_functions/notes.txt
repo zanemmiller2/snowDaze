@@ -1,0 +1,5 @@
+Cloud functions are the back-end code is stored on some servers such as Google Cloud,
+these functions run when some specific event happens. An example of the cloud function
+in social media would be a function which at the click of a button opens a URL that receives
+the text, audio, or video data and stores it on the server for future use.
+It becomes very convenient when all the cloud function is on the root level of the application.
