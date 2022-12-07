@@ -1,0 +1,225 @@
+/*----------------------------------------
+            INSERTs for Category tables
+  --------------------------------------*/
+
+-- Insert Road_Status_Categories
+INSERT INTO Road_Status_Categories (road_status)
+    VALUES
+        ("Open"),
+        ("Open with Restrictions"),
+        ("Closed");
+
+-- Insert Slope_Difficulty_Categories
+INSERT INTO Slope_Difficulty_Categories (slope_difficulty_level)
+    VALUES
+        ("Green"),
+        ("Blue"),
+        ("Black"),
+        ("Double Black");
+
+-- Insert Chain_Control_Categories_Washington
+INSERT INTO Chain_Control_Categories_Washington (wa_chain_control_level_description, wa_chain_control_level)
+    VALUES
+        ("Traction tires are not required but are recommended. Oversize loads prohibited. Oversize vehicles may be restricted from roadways during severe weather conditions.", "Traction Tires Advised"),
+        ("Passenger vehicles must use approved traction tires. Chains are required on all vehicles over 10,000 gross vehicle weight (GVW), and all vehicles and loads over 10,000 pounds gross vehicle weight rating (GVWR), including large passenger trucks and SUVs.", "Traction Tires Required"),
+        ("Tire chains required - Vehicles must install chains to continue traveling on the roadway. 4WD/AWD vehicles do not need to install chains at this point, but still must carry a set inside their vehicle in case conditions worsen.* See WAC 204-24-050.", "Tire Chains Required"),
+        ("Chains required on ALL vehicles, even 4WD/AWD. This is the last step before a pass is closed.", "Chains Required on All Vehicles");
+
+
+-- Insert Chain_Control_Categories_Calilfornia
+INSERT INTO Chain_Control_Categories_California (ca_chain_control_level_description, ca_chain_control_level)
+    VALUES
+        ("Chains are required on all vehicles except passenger vehicles and light-duty trucks under 6,000 pounds gross weight and equipped with snow tires on at least two drive wheels. Chains must be carried by vehicles using snow tires. All vehicles towing trailers must have chains on one drive axle. Trailers with brakes must have chains on at least one axle.", "Requirement 1 (R-1)"),
+        ("Chains or traction devices are required on all vehicles except four-wheel/all-wheel drive vehicles with snow-tread tires on all four wheels. NOTE: (Four-wheel/all-wheel drive vehicles must carry traction devices in chain control areas.)", "Requirement 2 (R-2)"),
+        ("Chains or traction devices are required on all vehicles, no exceptions.", "Requirement 3 (R-3)");
+
+-- Insert Phone_Numbers (Crystal, Stevens, Snoqualmie, Kirkwood, Northstar, Heavenly)
+INSERT INTO Phone_Numbers (country_code, area_code, phone_number)
+    VALUES
+        ("+1", "877", "2797895"),
+        ("+1", "206", "8124510"),
+        ("+1", "425", "4347669"),
+        ("+1", "209", "2586000"),
+        ("+1", "530", "5621010"),
+        ("+1", "775", "5867000");
+
+-- Insert Locations (Crystal, Stevens, Snoqualmie, Kirkwood, Northstar, Heavenly)
+INSERT INTO Locations (street_name, street_number_1, street_number_2, city, state, zip_code)
+    VALUES
+        ("Crystal Mountain Blvd.", "33914", NULL, "Enumclaw", "WA", "98022"),
+        ("Stevens Pass Hwy", "93001", NULL, "Skykomish", "WA", "98288"),
+        ("WA-906", "1001", NULL, "Snoqualmie Pass", "WA", "98068"),
+        ("Kirkwood Meadows Dr.", "1501", NULL, "Kikwood", "CA", "95646"),
+        ("Northstar Drive", "5001", NULL, "Truckee", "CA", "96160"),
+        ("Saddle Rd.", "3860", NULL, "South Lake Tahoe", "CA", "96150");
+
+-- Weather Sources (Crystal, Stevens, Snoqualmie, Kirkwood, Northstar, Heavenly)
+INSERT INTO Weather_Sources (weather_source_url)
+    VALUES
+        ("https://www.nwac.us/weatherdata/crystalskiarea/now/"),
+        ("https://nwac.us/weatherdata/brookssnow/now/"),
+        ("https://nwac.us/weatherdata/snoqualmiepass/now/"),
+        ("https://forecast.weather.gov/MapClick.php?lat=38.6848&lon=-120.0656#.Y5D6SS-B1s4"),
+        ("https://forecast.weather.gov/MapClick.php?lat=39.2875&lon=-120.1047#.Y5D6yC-B1s4"),
+        ("https://forecast.weather.gov/MapClick.php?lat=38.9376&lon=-119.9394#.Y5D65S-B1s4");
+
+-- Twitter Sources (Crystal, Stevens, Snoqualmie, Kirkwood, Northstar, Heavenly)
+INSERT INTO Twitter_Sources (twitter_source_url)
+    VALUES
+        ("https://twitter.com/CrystalMt"),
+        ("https://twitter.com/stevensupdates"),
+        ("https://twitter.com/SummitSnow411"),
+        ("https://twitter.com/KWconditions"),
+        ("https://twitter.com/northstarmtn"),
+        ("https://twitter.com/HVconditions");
+
+-- Road Condition sources
+INSERT INTO Traffic_Sources (traffic_source_url)
+    VALUES
+        ("https://wsdot.wa.gov"),
+        ("https://roads.dot.ca.gov");
+
+-- Access Roads
+INSERT INTO Access_Roads (road_name, road_direction, road_status)
+    VALUES
+        ("SR 410", "East", NULL),
+        ("SR 410", "West", NULL),
+        ("SR 164", "East", NULL),
+        ("SR 164", "West", NULL),
+        ("I 90", "East", NULL),
+        ("I 90", "West", NULL),
+        ("I 5", "North", NULL),
+        ("I 5", "South", NULL),
+        ("US 2", "East", NULL),
+        ("US 2", "West", NULL),
+        ("I 80", "East", NULL),
+        ("I 80", "West", NULL),
+        ("CA 267", "North", NULL),
+        ("CA 267", "South", NULL),
+        ("US 50", "East", NULL),
+        ("US 50", "West", NULL),
+        ("CA 88", "East", NULL),
+        ("CA 88", "West", NULL),
+        ("CA 89", "North", NULL),
+        ("CA 89", "South", NULL);
+
+-- Resorts (Crystal, Stevens, Snoqualmie, Kirkwood, Northstar, Heavenly)
+INSERT INTO Resorts (resort_name, resort_location, resort_website, resort_traffic_source, resort_weather_source, resort_twitter_source, resort_phone_number)
+    VALUES
+        ("Crystal Mountain Resort", 1, "https://www.crystalmountainresort.com", 1, 1, 1, 1),
+        ("Stevens Pass", 2, "https://www.stevenspass.com", 1, 2, 2, 2),
+        ("The Summit at Snoqualmie", 3, "https://summitatsnoqualmie.com", 1, 3, 3, 3),
+        ("Kirkwood", 4, "https://www.kirkwood.com", 2, 4, 4, 4),
+        ("Northstar California", 5, "https://www.northstarcalifornia.com", 2, 5, 5, 5),
+        ("Heavenly Lake Tahoe", 6, "https://www.skiheavenly.com", 2, 6, 6, 6);
+
+
+-- Sample Road_Statuses
+INSERT INTO Road_Status (road_status_category, wa_chain_control, ca_chain_control, access_road)
+    VALUES
+        (1, NULL, NULL, 1),
+        (2, 1, NULL, 5),
+        (2, 3, NULL, 10),
+        (2, NULL, 2, 11),
+        (2, NULL, 3, 12),
+        (3, NULL, 3, 18);
+
+-- Sample Resort_Access_Roads
+INSERT INTO Resorts_Access_Roads (access_road_id, resort_id, "is_to_resort?", "is_from_resort?")
+    VALUES
+        (1, 1, 1, 0),
+        (1, 1, 0, 1),
+        (2, 1, 1, 0),
+        (2, 1, 0, 1),
+        (3, 1, 1, 0),
+        (3, 1, 0, 1),
+        (4, 1, 1, 0),
+        (4, 1, 0, 1),
+        (5, 3, 1, 0),
+        (5, 3, 0, 1),
+        (6, 3, 1, 0),
+        (6, 3, 0, 1),
+        (7, 2, 1, 0),
+        (7, 2, 0, 1),
+        (8, 2, 1, 0),
+        (8, 2, 0, 1),
+        (9, 2, 1, 0),
+        (9, 2, 0, 1),
+        (10, 2, 1, 0),
+        (10, 2, 0, 1),
+        (11, 5, 1, 0),
+        (11, 5, 0, 1),
+        (12, 5, 1, 0),
+        (12, 5, 0, 1),
+        (13, 5, 1, 0),
+        (13, 5, 0, 1),
+        (14, 5, 1, 0),
+        (14, 5, 0, 1),
+        (15, 6, 1, 0),
+        (15, 6, 0, 1),
+        (16, 6, 1, 0),
+        (16, 6, 0, 1),
+        (17, 4, 1, 0),
+        (17, 4, 0, 1),
+        (18, 4, 1, 0),
+        (18, 4, 0, 1),
+        (19, 4, 1, 0),
+        (19, 4, 0, 1),
+        (20, 4, 1, 0),
+        (20, 4, 0, 1),
+        (15, 4, 1, 0),
+        (15, 4, 0, 1),
+        (16, 4, 1, 0),
+        (16, 4, 0, 1);
+
+-- Sample Slopes
+INSERT INTO Slopes (slope_name, slope_difficulty)
+    VALUES
+        ("After Burn", 2),
+        ("Broadway", 1),
+        ("Boondoggle", 3),
+        ("Crest Trail", 2),
+        ("Promenade", 1),
+        ("Double Diamond", 4),
+        ("Thunderbird", 2),
+        ("Little Thunder", 1),
+        ("360 Bowl", 3),
+        ("Bud's Alley", 2),
+        ("Hay Flat", 1),
+        ("Lightning", 3),
+        ("Lookout Bypass", 2),
+        ("Martis", 3),
+        ("Carpet Bowl", 1),
+        ("Maggie's", 1),
+        ("Cascade", 2),
+        ("Sky Canyon", 3);
+
+
+-- Sample Resort Slopes
+INSERT INTO Resorts_Slopes (resort_id, slope_id)
+    VALUES
+        (1, 1),
+        (1, 2),
+        (1, 3),
+        (2, 4),
+        (2, 5),
+        (2, 6),
+        (3, 7),
+        (3, 8),
+        (3, 9),
+        (4, 10),
+        (4, 11),
+        (4, 12),
+        (5, 13),
+        (5, 14),
+        (5, 15),
+        (6, 16),
+        (6, 17),
+        (6, 18);
+
+
+
+
+
+
+

@@ -32,7 +32,7 @@ CREATE TABLE "Locations"(
   location_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   street_name TEXT NOT NULL,
   street_number_1 TEXT NOT NULL,
-  street_number_2 TEXT NOT NULL,
+  street_number_2 TEXT,
   city TEXT NOT NULL,
   state TEXT NOT NULL,
   zip_code TEXT NOT NULL
@@ -84,7 +84,7 @@ CREATE TABLE "Access_Roads"(
   access_road_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   road_name TEXT NOT NULL,
   road_direction TEXT NOT NULL,
-  road_status INTEGER NOT NULL,
+  road_status INTEGER,
   CONSTRAINT "Road_Status_Access_Roads"
     FOREIGN KEY (road_status) REFERENCES "Road_Status" (road_status_id)
       ON DELETE Set null ON UPDATE Cascade
@@ -107,7 +107,9 @@ CREATE TABLE "Resorts_Access_Roads"(
 CREATE TABLE "Road_Status"(
   road_status_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   road_status_category INTEGER NOT NULL,
-  wa_chain_control INTEGER NOT NULL,
+  wa_chain_control INTEGER,
+  ca_chain_control INTEGER,
+  access_road INTEGER,
   CONSTRAINT "Road_Status_Categories_Road_Status"
     FOREIGN KEY (road_status_category)
       REFERENCES "Road_Status_Categories" (road_status_category_id)
@@ -115,7 +117,15 @@ CREATE TABLE "Road_Status"(
   CONSTRAINT "Chain_Control_Categories_Washington_Road_Status"
     FOREIGN KEY (wa_chain_control)
       REFERENCES "Chain_Control_Categories_Washington" (wa_chain_control_id)
-      ON DELETE Set null ON UPDATE Cascade
+      ON DELETE Set null ON UPDATE Cascade,
+  CONSTRAINT "Road_Status_Chain_Control_Categories_California_ca_chain_control_id_fk"
+    FOREIGN KEY (ca_chain_control)
+      REFERENCES "Chain_Control_Categories_California" (ca_chain_control_id)
+      ON DELETE Set null ON UPDATE Cascade,
+  CONSTRAINT "Road_Status_Access_Roads_access_road_id_fk"
+    FOREIGN KEY (access_road)
+      REFERENCES "Access_Roads" (access_road_id)
+          ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE "Road_Status_Categories"(
@@ -127,6 +137,11 @@ CREATE TABLE "Chain_Control_Categories_Washington"(
 wa_chain_control_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   wa_chain_control_level_description TEXT NOT NULL,
   wa_chain_control_level TEXT NOT NULL
+);
+CREATE TABLE "Chain_Control_Categories_California"(
+  ca_chain_control_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  ca_chain_control_level_description TEXT NOT NULL,
+  ca_chain_control_level TEXT NOT NULL
 );
 
 CREATE TABLE "Phone_Numbers"(
