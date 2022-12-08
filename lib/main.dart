@@ -4,18 +4,23 @@ import 'package:flutter/services.dart';
 
 // Firebase imports
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:snow_daze/screens/authenticate/authWrapper.dart';
+import 'package:snow_daze/services/authService.dart';
+// import 'firebase_options.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
-// Package Imports
-import 'package:sqflite/sqflite.dart';
+// Third Party Package Imports
+// import 'package:sqflite/sqflite.dart';
+import 'package:provider/provider.dart';
 
 // Screen Imports
-import 'package:snow_daze/screens/login_page.dart';
-import 'package:snow_daze/screens/temp_home.dart';
+// import 'package:snow_daze/screens/splash_page.dart';
 
-Future<void> main() async {
+import 'models/FirebaseUser.dart';
+
+// Custom Utility Imports
+
+void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -37,13 +42,31 @@ class SnowDazeApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider
-      ]
 
-    );
+    return StreamProvider<FirebaseUser?>.value(
+      value: AuthService().user,
+      initialData: null,
+      child: MaterialApp(
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: Colors.black,
+          buttonTheme: ButtonThemeData(
+            buttonColor: Colors.black,
+            textTheme: ButtonTextTheme.primary,
+            colorScheme:
+            Theme.of(context).colorScheme.copyWith(secondary: Colors.white),
+          ),
+          fontFamily: 'Georgia',
+          textTheme: const TextTheme(
+            headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+            headline6: TextStyle(fontSize: 20.0, fontStyle: FontStyle.italic),
+            bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+          ),
+          // colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.cyan[600]),
+        ),
+        home: const Wrapper(),
+      ),);
+
   }
 }
-
 
