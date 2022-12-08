@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "48081242628",
+    "project_id": "snow-daze",
+    "storage_bucket": "snow-daze.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48081242628:android:b56c1d80737885b2f98351",
+        "android_client_info": {
+          "package_name": "com.example.snow_daze"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "48081242628-n0ecd0386mip836nv41bcu4n578go61k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRlt6lvJm7qAbndalRHqp92vR9kydZrus"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "48081242628-n0ecd0386mip836nv41bcu4n578go61k.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "48081242628-rgustl1mj87d380dpg70k11ob5r5t44d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.snowDaze"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
