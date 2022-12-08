@@ -1,0 +1,5 @@
+snowDazeDB - Sqlite db file
+snowDaze.mwb - mysql workbench erd
+snowDaze_CREATE_DDL.sqlite - ddl file with create tables for data
+snowDaze_diagram.dmm - sqlite luna... diagram
+snowDaze_INSERT_DDL.sqlite - DDL file with insert sample data
