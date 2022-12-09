@@ -84,10 +84,6 @@ CREATE TABLE "Access_Roads"(
   access_road_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   road_name TEXT NOT NULL,
   road_direction TEXT NOT NULL,
-  road_status INTEGER,
-  CONSTRAINT "Road_Status_Access_Roads"
-    FOREIGN KEY (road_status) REFERENCES "Road_Status" (road_status_id)
-      ON DELETE Set null ON UPDATE Cascade
 );
 
 CREATE TABLE "Resorts_Access_Roads"(

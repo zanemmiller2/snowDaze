@@ -80,28 +80,28 @@ INSERT INTO Traffic_Sources (traffic_source_url)
         ("https://roads.dot.ca.gov");
 
 -- Access Roads
-INSERT INTO Access_Roads (road_name, road_direction, road_status)
+INSERT INTO Access_Roads (road_name, road_direction)
     VALUES
-        ("SR 410", "East", NULL),
-        ("SR 410", "West", NULL),
-        ("SR 164", "East", NULL),
-        ("SR 164", "West", NULL),
-        ("I 90", "East", NULL),
-        ("I 90", "West", NULL),
-        ("I 5", "North", NULL),
-        ("I 5", "South", NULL),
-        ("US 2", "East", NULL),
-        ("US 2", "West", NULL),
-        ("I 80", "East", NULL),
-        ("I 80", "West", NULL),
-        ("CA 267", "North", NULL),
-        ("CA 267", "South", NULL),
-        ("US 50", "East", NULL),
-        ("US 50", "West", NULL),
-        ("CA 88", "East", NULL),
-        ("CA 88", "West", NULL),
-        ("CA 89", "North", NULL),
-        ("CA 89", "South", NULL);
+        ("SR 410", "East"),
+        ("SR 410", "West"),
+        ("SR 164", "East"),
+        ("SR 164", "West"),
+        ("I 90", "East"),
+        ("I 90", "West"),
+        ("I 5", "North"),
+        ("I 5", "South"),
+        ("US 2", "East"),
+        ("US 2", "West"),
+        ("I 80", "East"),
+        ("I 80", "West"),
+        ("CA 267", "North"),
+        ("CA 267", "South"),
+        ("US 50", "East"),
+        ("US 50", "West"),
+        ("CA 88", "East"),
+        ("CA 88", "West"),
+        ("CA 89", "North"),
+        ("CA 89", "South");
 
 -- Resorts (Crystal, Stevens, Snoqualmie, Kirkwood, Northstar, Heavenly)
 INSERT INTO Resorts (resort_name, resort_location, resort_website, resort_traffic_source, resort_weather_source, resort_twitter_source, resort_phone_number)
