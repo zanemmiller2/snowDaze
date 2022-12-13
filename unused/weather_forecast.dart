@@ -1,4 +1,15 @@
 
+/*
+
+** This class model was modified to use xml.getElements notation instead of converting xml to json
+    and then indexing a json object for improved stability and reliability.
+** The class model was also restructured to better match the structure of a different site using the
+    digitalDWML forecast type instead of dwml.
+** The new file is in lib/models/weather_class.dart
+
+*/
+
+
 import 'dart:convert';
 import 'package:xml2json/xml2json.dart';
 
