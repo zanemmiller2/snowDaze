@@ -40,6 +40,8 @@ dependencies:
   dynamic_weather_icons: 1.2.0
   shared_preferences: 2.0.15
   provider: ^6.0.4
+  http: ^0.13.5
+  xml2json: ^5.3.5
 
 dev_dependencies:
   flutter_test:
