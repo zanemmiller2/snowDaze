@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:snow_daze/screens/weatherScreens/add_new_weather_location_screen.dart';
 import 'package:snow_daze/widgets/side_drawer_widget.dart';
 
-import '../screens/weather_page.dart';
+import '../screens/weatherScreens/weather_page.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key : key);
@@ -24,10 +25,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       size: 150,
     ),
     WeatherScreen(),
-    Icon(
-      Icons.traffic_outlined,
-      size: 150,
-    ),
+    AddNewLocation(),
     Icon(
       Icons.settings_outlined,
       size: 150,
@@ -80,10 +78,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
           BottomNavigationBarItem(
               icon: Icon(
-                  Icons.traffic_outlined,
+                  Icons.add_location,
                   color: Colors.white
               ),
-              label: "Traffic",
+              label: "Add New",
               backgroundColor: Colors.green
           ),
           BottomNavigationBarItem(

@@ -1,4 +1,16 @@
 
+
+final supportedWeatherLocations = [
+  {"resortName": "Crystal Mountain Resort", "latitude": "46.9401", "longitude": "-121.4732"},
+  {"resortName": "Stevens Pass", "latitude": "47.7456", "longitude": "-121.0892"},
+  {"resortName": "Mt. Baker", "latitude": "48.862", "longitude": "-121.679"},
+  {"resortName": "Snoqualmie", "latitude": "47.4187", "longitude": "-121.412"},
+  {"resortName": "Northstar", "latitude": "39.2875", "longitude": "-120.1047"},
+  {"resortName": "Heavenly", "latitude": "38.9376", "longitude": "-119.9394"},
+  {"resortName": "Kirkwood", "latitude": "38.6849", "longitude": "-120.0661"},
+  {"resortName": "Palisades", "latitude": "39.1968", "longitude": "-120.2357"}
+];
+
 final dummySnapshot = {
     "creationDate": "Dec 13 2:59 PM",
     "sourceUrl": "https://forecast.weather.gov/MapClick.php?lat=36.7311&lon=-91.8531&FcstType=digitalDWML",

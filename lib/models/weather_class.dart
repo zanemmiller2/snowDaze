@@ -1,13 +1,10 @@
 
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart';
 import 'package:intl/intl.dart';
-const kDebugMode = true;
-void log(var logstr) {
-  stdout.writeln("**** $logstr");
-}
+
+import '../services/debugLogFunction.dart';
 
 class WeatherForecast {
 
