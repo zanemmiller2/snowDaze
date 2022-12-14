@@ -1,7 +1,8 @@
+
 import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart';
 import 'package:intl/intl.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 void main() async {
   const kDebugMode = true;
@@ -9,6 +10,7 @@ void main() async {
   var longitude = "-91.8531";
   WeatherForecast weather = WeatherForecast(latitude, longitude);
   await weather.initialize();
+
 
   /* Meta Data */
   if (kDebugMode) {
@@ -63,16 +65,10 @@ void main() async {
     print("Weather Type: ${weather.weatherConditionsType}");
     print("Weather Coverage: ${weather.weatherConditionsCoverage}");
 
-    // const documentID = 'UeGzVloS6W9XP8Oh1GVf';
-    // weather.readDocument(documentID);
-
   }
 }
 
 class WeatherForecast {
-  //
-  // FirebaseFirestore firestore = FirebaseFirestore.instance;
-  // CollectionReference weatherForecasts = FirebaseFirestore.instance.collection('weather_forecasts');
 
   XmlDocument? xmlData;
   String? nwsSourceURL;
@@ -140,17 +136,6 @@ class WeatherForecast {
     setPrecipitationProbability();
     setWeather();
   }
-
-  /*--------------------------------------------------------------------
-  * #                                                                  #
-  * #                   Firestore Interactions                         #
-  * #                                                                  #
-  * --------------------------------------------------------------------*/
-
-  // Future<void> readDocument (String documentID) async {
-  //   var tempDoc = await weatherForecasts.doc(documentID).get();
-  //   print(tempDoc);
-  // }
 
   /*--------------------------------------------------------------------
   * #                                                                  #
