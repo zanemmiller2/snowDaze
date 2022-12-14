@@ -1,70 +1,79 @@
 import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart';
+import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
+  const kDebugMode = true;
   var latitude = "36.7311";
   var longitude = "-91.8531";
   WeatherForecast weather = WeatherForecast(latitude, longitude);
-
-  await weather.fetchXML();
+  await weather.initialize();
 
   /* Meta Data */
-  weather.setCreationDate();
-  print("Creation Date: ${weather.creationDate}");
+  if (kDebugMode) {
+    print("Creation Date: ${weather.creationDate}");
 
-  weather.setSourceCredit();
-  print("Source Credit: ${weather.sourceCredit}");
 
-  weather.setLayoutKeys();
-  print("Time Layout Keys: ${weather.timeLayoutKeys}");
+    print("Source Credit: ${weather.sourceCredit}");
 
-  weather.setStartEndTimes();
-  print("Start Times: ${weather.startTimes}");
-  print("End Times: ${weather.endTimes}");
+    print("Time Layout Keys: ${weather.timeLayoutKeys}");
 
-  /* Location Data */
-  weather.setLatLong();
-  print("Latitude: ${weather.latitude}, Longitude: ${weather.longitude}");
+    print("Start Times: ${weather.startTimes}");
+    print("End Times: ${weather.endTimes}");
 
-  weather.setAreaDescription();
-  print("Area Description: ${weather.areaDescription}");
+    /* Location Data */
+    print("Latitude: ${weather.latitude}, Longitude: ${weather.longitude}");
 
-  weather.setElevation();
-  print("Elevation: ${weather.elevation} ${weather.elevationUnits}");
+    print("Area Description: ${weather.areaDescription}");
 
-  weather.setTemperatures();
-  print(
-      "Dew Points (${weather.dewPointUnits}): ${weather.dewPointTemperatures}");
-  print(
-      "Wind Chill (${weather.windChillUnits}): ${weather.windChillTemperatures}");
-  print(
-      "Hourly Temps (${weather.hourlyTemperatureUnits}): ${weather.hourlyTemperatures}");
+    print("Elevation: ${weather.elevation} ${weather.elevationUnits}");
 
-  weather.setWindSpeeds();
-  print("Gusts (${weather.gustsWindSpeedUnits}): ${weather.gustsWindSpeeds}");
-  print(
-      "Sustained Winds (${weather.sustainedWindSpeedUnits}): ${weather.sustainedWindSpeeds}");
-  print(
-      "Wind Directions (${weather.windDirectionUnits}): ${weather.windDirections}");
+    print(
+        "Dew Points (${weather.dewPointUnits}): ${weather
+            .dewPointTemperatures}");
+    print(
+        "Wind Chill (${weather.windChillUnits}): ${weather
+            .windChillTemperatures}");
+    print(
+        "Hourly Temps (${weather.hourlyTemperatureUnits}): ${weather
+            .hourlyTemperatures}");
 
-  weather.setCloudAmounts();
-  print("Cloud Amounts (${weather.cloudAmountUnits}): ${weather.cloudAmounts}");
+    print("Gusts (${weather.gustsWindSpeedUnits}): ${weather.gustsWindSpeeds}");
+    print(
+        "Sustained Winds (${weather.sustainedWindSpeedUnits}): ${weather
+            .sustainedWindSpeeds}");
+    print(
+        "Wind Directions (${weather.windDirectionUnits}): ${weather
+            .windDirections}");
 
-  weather.setPrecipitationProbability();
-  print(
-      "Precipitation Probabilities (${weather.precipitationProbabilityUnits}): ${weather.precipitationProbability}");
+    print(
+        "Cloud Amounts (${weather.cloudAmountUnits}): ${weather.cloudAmounts}");
 
-  weather.setHumidity();
-  print(
-      "Relative Humidity (${weather.relativeHumidityUnits}): ${weather.relativeHumidity}");
+    print(
+        "Precipitation Probabilities (${weather
+            .precipitationProbabilityUnits}): ${weather
+            .precipitationProbability}");
 
-  weather.setWeather();
-  print("Hourly QPFS (${weather.hourlyQpfUnits}): ${weather.hourlyQpf}");
-  print("Weather Type: ${weather.weatherConditionsType}");
-  print("Weather Coverage: ${weather.weatherConditionsCoverage}");
+    print(
+        "Relative Humidity (${weather.relativeHumidityUnits}): ${weather
+            .relativeHumidity}");
+
+    print("Hourly QPFS (${weather.hourlyQpfUnits}): ${weather.hourlyQpf}");
+    print("Weather Type: ${weather.weatherConditionsType}");
+    print("Weather Coverage: ${weather.weatherConditionsCoverage}");
+
+    // const documentID = 'UeGzVloS6W9XP8Oh1GVf';
+    // weather.readDocument(documentID);
+
+  }
 }
 
 class WeatherForecast {
+  //
+  // FirebaseFirestore firestore = FirebaseFirestore.instance;
+  // CollectionReference weatherForecasts = FirebaseFirestore.instance.collection('weather_forecasts');
+
   XmlDocument? xmlData;
   String? nwsSourceURL;
 
@@ -83,28 +92,28 @@ class WeatherForecast {
   String? elevationUnits;
 
   /* Parameters */
-  List<double> dewPointTemperatures = [];
+  List<dynamic> dewPointTemperatures = [];
   String dewPointUnits = "Fahrenheit";
-  List<double> windChillTemperatures = [];
+  List<dynamic> windChillTemperatures = [];
   String windChillUnits = "Fahrenheit";
-  List<double> hourlyTemperatures = [];
+  List<dynamic> hourlyTemperatures = [];
   String hourlyTemperatureUnits = "Fahrenheit";
-  List<double> sustainedWindSpeeds = [];
+  List<dynamic> sustainedWindSpeeds = [];
   String sustainedWindSpeedUnits = 'mph';
-  List<double> gustsWindSpeeds = [];
+  List<dynamic> gustsWindSpeeds = [];
   String gustsWindSpeedUnits = 'mph';
-  List<double> windDirections = [];
+  List<dynamic> windDirections = [];
   String? windDirectionUnits;
-  List<double> cloudAmounts = [];
+  List<dynamic> cloudAmounts = [];
   String? cloudAmountUnits;
-  List<double> precipitationProbability = [];
+  List<dynamic> precipitationProbability = [];
   String? precipitationProbabilityUnits;
-  List<double> relativeHumidity = [];
+  List<dynamic> relativeHumidity = [];
   String? relativeHumidityUnits;
-  List<double> hourlyQpf = [];
+  List<dynamic> hourlyQpf = [];
   String? hourlyQpfUnits;
-  List<String> weatherConditionsType = [];
-  List<String> weatherConditionsCoverage = [];
+  List<List<String?>> weatherConditionsType = [];
+  List<List<String?>> weatherConditionsCoverage = [];
 
   // Class constructor
   WeatherForecast(String latitude, String longitude) {
@@ -112,6 +121,36 @@ class WeatherForecast {
     nwsSourceURL =
         "https://forecast.weather.gov/MapClick.php?lat=$latitude&lon=$longitude&FcstType=digitalDWML";
   }
+
+
+  Future<void> initialize () async {
+    await fetchXML();
+    setCreationDate();
+    setSourceCredit();
+    setLayoutKeys();
+    setStartEndTimes();
+    setStartEndTimes();
+    setLatLong();
+    setAreaDescription();
+    setElevation();
+    setTemperatures();
+    setWindSpeeds();
+    setHumidity();
+    setCloudAmounts();
+    setPrecipitationProbability();
+    setWeather();
+  }
+
+  /*--------------------------------------------------------------------
+  * #                                                                  #
+  * #                   Firestore Interactions                         #
+  * #                                                                  #
+  * --------------------------------------------------------------------*/
+
+  // Future<void> readDocument (String documentID) async {
+  //   var tempDoc = await weatherForecasts.doc(documentID).get();
+  //   print(tempDoc);
+  // }
 
   /*--------------------------------------------------------------------
   * #                                                                  #
@@ -139,11 +178,16 @@ class WeatherForecast {
     }
   }
 
+  // helper to resend http request if fails
   retryFutureRequest(future, delay) {
     Future.delayed(Duration(milliseconds: delay), () {
       future();
     });
   }
+
+  // Converts UTC time to local 12hr time format "MMMd h:mm a)
+  String convertToLocalTime (String? time) => DateFormat.MMMd().add_jm().format(DateTime.parse(time!).toLocal());
+
 
   /*--------------------------------------------------------------------
   * #                                                                  #
@@ -162,11 +206,11 @@ class WeatherForecast {
 
   // extract and store the creation date
   void setCreationDate() {
-    creationDate = xmlData?.rootElement
+    creationDate = convertToLocalTime(xmlData?.rootElement
         .getElement('head')
         ?.getElement('product')
         ?.getElement('creation-date')
-        ?.text;
+        ?.text);
   }
 
   // extract layout keys from xml
@@ -186,7 +230,7 @@ class WeatherForecast {
         ?.findAllElements("start-valid-time")
         .map((node) => node.text)
         .forEach((element) {
-      startTimes.add(element);
+      startTimes.add(convertToLocalTime(element));
     });
 
     // get and store end times
@@ -194,7 +238,7 @@ class WeatherForecast {
         ?.findAllElements("end-valid-time")
         .map((node) => node.text)
         .forEach((element) {
-      endTimes.add(element);
+      endTimes.add(convertToLocalTime(element));
     });
   }
 
@@ -260,7 +304,7 @@ class WeatherForecast {
         for (var tempDewValue in tempDews) {
           if (tempDewValue.isEmpty) {
             // convert null dew point values
-            dewPointTemperatures.add(double.parse("0"));
+            dewPointTemperatures.add("NA");
           } else {
             dewPointTemperatures.add(double.parse(tempDewValue));
           }
@@ -274,7 +318,7 @@ class WeatherForecast {
         for (var tempWindChillValue in tempWindChills) {
           // convert null wind chill values
           if (tempWindChillValue.isEmpty) {
-            windChillTemperatures.add(double.parse("0"));
+            windChillTemperatures.add("NA");
           } else {
             windChillTemperatures.add(double.parse(tempWindChillValue));
           }
@@ -288,7 +332,7 @@ class WeatherForecast {
         for (var tempHourlyTemp in tempHourlyTemps) {
           // convert null hourly temperature values
           if (tempHourlyTemp.isEmpty) {
-            hourlyTemperatures.add(double.parse("0"));
+            hourlyTemperatures.add("NA");
           } else {
             hourlyTemperatures.add(double.parse(tempHourlyTemp));
           }
@@ -311,7 +355,7 @@ class WeatherForecast {
         for (var tempGust in tempGusts) {
           // convert null gusts values
           if (tempGust.isEmpty) {
-            gustsWindSpeeds.add(double.parse("0"));
+            gustsWindSpeeds.add("NA");
           } else {
             gustsWindSpeeds.add(double.parse(tempGust));
           }
@@ -325,7 +369,7 @@ class WeatherForecast {
         for (var tempSustainedWind in tempSustainedWinds) {
           if (tempSustainedWind.isEmpty) {
             // convert null sustained values
-            sustainedWindSpeeds.add(double.parse("0"));
+            sustainedWindSpeeds.add("NA");
           } else {
             sustainedWindSpeeds.add(double.parse(tempSustainedWind));
           }
@@ -354,7 +398,7 @@ class WeatherForecast {
         for (var tempWindDirection in tempWindDirections) {
           if (tempWindDirection.isEmpty) {
             // convert null wind directions to 0
-            windDirections.add(double.parse("0"));
+            windDirections.add("NA");
           } else {
             windDirections.add(double.parse(tempWindDirection));
           }
@@ -381,7 +425,7 @@ class WeatherForecast {
         // use 0.0 instead of null
         for (var tempAmount in tempCloudAmount) {
           if (tempAmount.isEmpty) {
-            cloudAmounts.add(double.parse("0"));
+            cloudAmounts.add("NA");
           } else {
             cloudAmounts.add(double.parse(tempAmount));
           }
@@ -409,7 +453,7 @@ class WeatherForecast {
         // use 0.0 instead of null
         for (var tempAmount in tempProbabilityAmount) {
           if (tempAmount.isEmpty) {
-            precipitationProbability.add(double.parse("0"));
+            precipitationProbability.add("NA");
           } else {
             precipitationProbability.add(double.parse(tempAmount));
           }
@@ -436,7 +480,7 @@ class WeatherForecast {
         // use 0.0 instead of null
         for (var tempAmount in tempHumidityAmount) {
           if (tempAmount.isEmpty) {
-            relativeHumidity.add(double.parse("0"));
+            relativeHumidity.add("NA");
           } else {
             relativeHumidity.add(double.parse(tempAmount));
           }
@@ -463,7 +507,7 @@ class WeatherForecast {
         // use 0.0 instead of null
         for (var tempAmount in tempHourlyQpfAmount) {
           if (tempAmount.isEmpty) {
-            hourlyQpf.add(double.parse("0"));
+            hourlyQpf.add("NA");
           } else {
             hourlyQpf.add(double.parse(tempAmount));
           }
@@ -476,8 +520,8 @@ class WeatherForecast {
     for (var tempCondition in tempWeathers!) {
       // null conditions
       if (tempCondition.getAttribute('xsi:nil') == 'true') {
-        weatherConditionsType.add("None");
-        weatherConditionsCoverage.add("None");
+        weatherConditionsType.add(["None"]);
+        weatherConditionsCoverage.add(["None"]);
 
         // add weather condition type and coverage to respective lists
       } else {
@@ -487,31 +531,28 @@ class WeatherForecast {
 
         // weather condition event has additive weather type. for example "rain AND thunderstorms"
         if (tempConditionValues.length > 1) {
-          String tempConditionString = '';
+          List<String> tempConditionStringList = [];
+          List<String> tempCoverageStringList = [];
 
           // loop through each event and build the weather condition string
           for (int i = 0; i < tempConditionValues.length; i++) {
             // add the leading "and" conditions
-            if (i < tempConditionValues.length - 1) {
-              tempConditionString =
-                  '$tempConditionString${tempConditionValues[i].getAttribute('weather-type')} and';
-
-              // Add last condition and coverage type. Coverage seems to only be stated in last additive event
-            } else if (i == tempConditionValues.length - 1) {
-              tempConditionString =
-                  '$tempConditionString ${tempConditionValues[i].getAttribute('weather-type')}';
-              weatherConditionsType.add(tempConditionString);
-              weatherConditionsCoverage.add(
-                  tempConditionValues[i].getAttribute('coverage') ?? 'None');
+            tempConditionStringList.add(
+                tempConditionValues[i].getAttribute('weather-type') ?? 'None');
+            tempCoverageStringList.add(
+                tempConditionValues[i].getAttribute('coverage') ?? 'None');
+            if (i == tempConditionValues.length - 1) {
+              weatherConditionsType.add(tempConditionStringList);
+              weatherConditionsCoverage.add(tempCoverageStringList);
             }
           }
 
           // weather condition even has no additive value -- add single type and coverage
         } else {
           weatherConditionsType.add(
-              tempConditionValues[0].getAttribute('weather-type') as String);
+              [tempConditionValues[0].getAttribute('weather-type') ?? "None"]);
           weatherConditionsCoverage
-              .add(tempConditionValues[0].getAttribute('coverage') as String);
+              .add([tempConditionValues[0].getAttribute('coverage') ?? "None"]);
         }
       }
     }
