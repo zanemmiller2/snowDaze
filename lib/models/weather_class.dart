@@ -1,79 +1,16 @@
 
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart';
 import 'package:intl/intl.dart';
-
-
-void main() async {
-  const kDebugMode = true;
-  var latitude = "36.7311";
-  var longitude = "-91.8531";
-  WeatherForecast weather = WeatherForecast(latitude, longitude);
-  await weather.initialize();
-
-
-  /* Meta Data */
-  if (kDebugMode) {
-    print("Creation Date: ${weather.creationDate}");
-
-
-    print("Source Credit: ${weather.sourceCredit}");
-
-    print("Time Layout Keys: ${weather.timeLayoutKeys}");
-
-    print("Start Times: ${weather.startTimes}");
-    print("End Times: ${weather.endTimes}");
-
-    /* Location Data */
-    print("Latitude: ${weather.latitude}, Longitude: ${weather.longitude}");
-
-    print("Area Description: ${weather.areaDescription}");
-
-    print("Elevation: ${weather.elevation} ${weather.elevationUnits}");
-
-    print(
-        "Dew Points (${weather.dewPointUnits}): ${weather
-            .dewPointTemperatures}");
-    print(
-        "Wind Chill (${weather.windChillUnits}): ${weather
-            .windChillTemperatures}");
-    print(
-        "Hourly Temps (${weather.hourlyTemperatureUnits}): ${weather
-            .hourlyTemperatures}");
-
-    print("Gusts (${weather.gustsWindSpeedUnits}): ${weather.gustsWindSpeeds}");
-    print(
-        "Sustained Winds (${weather.sustainedWindSpeedUnits}): ${weather
-            .sustainedWindSpeeds}");
-    print(
-        "Wind Directions (${weather.windDirectionUnits}): ${weather
-            .windDirections}");
-
-    print(
-        "Cloud Amounts (${weather.cloudAmountUnits}): ${weather.cloudAmounts}");
-
-    print(
-        "Precipitation Probabilities (${weather
-            .precipitationProbabilityUnits}): ${weather
-            .precipitationProbability}");
-
-    print(
-        "Relative Humidity (${weather.relativeHumidityUnits}): ${weather
-            .relativeHumidity}");
-
-    print("Hourly QPFS (${weather.hourlyQpfUnits}): ${weather.hourlyQpf}");
-    print("Weather Type: ${weather.weatherConditionsType}");
-    print("Weather Coverage: ${weather.weatherConditionsCoverage}");
-
-  }
-}
 
 class WeatherForecast {
 
   XmlDocument? xmlData;
   String? nwsSourceURL;
 
-  /* Meta Data */
+  /* Metadata */
   String? sourceCredit;
   List<String> timeLayoutKeys = [];
   List<String> startTimes = [];
@@ -87,31 +24,37 @@ class WeatherForecast {
   double? elevation;
   String? elevationUnits;
 
-  /* Parameters */
+  /* Parameters*/
+  //temperatures
   List<dynamic> dewPointTemperatures = [];
   String dewPointUnits = "Fahrenheit";
   List<dynamic> windChillTemperatures = [];
   String windChillUnits = "Fahrenheit";
   List<dynamic> hourlyTemperatures = [];
   String hourlyTemperatureUnits = "Fahrenheit";
+  // winds
   List<dynamic> sustainedWindSpeeds = [];
   String sustainedWindSpeedUnits = 'mph';
   List<dynamic> gustsWindSpeeds = [];
   String gustsWindSpeedUnits = 'mph';
   List<dynamic> windDirections = [];
   String? windDirectionUnits;
+  // clouds
   List<dynamic> cloudAmounts = [];
   String? cloudAmountUnits;
+  // precipitation
   List<dynamic> precipitationProbability = [];
   String? precipitationProbabilityUnits;
-  List<dynamic> relativeHumidity = [];
-  String? relativeHumidityUnits;
   List<dynamic> hourlyQpf = [];
   String? hourlyQpfUnits;
+  // humidity
+  List<dynamic> relativeHumidity = [];
+  String? relativeHumidityUnits;
+  // weather conditions
   List<List<String?>> weatherConditionsType = [];
   List<List<String?>> weatherConditionsCoverage = [];
 
-  // Class constructor
+  /* Class Constructor */
   WeatherForecast(String latitude, String longitude) {
     // sets weather forecast source url
     nwsSourceURL =
@@ -541,5 +484,59 @@ class WeatherForecast {
         }
       }
     }
+  }
+}
+
+void main() async {
+  const kDebugMode = true;
+  var latitude = "36.7311";
+  var longitude = "-91.8531";
+  WeatherForecast weather = WeatherForecast(latitude, longitude);
+  await weather.initialize();
+
+
+  /* Meta Data */
+  if (kDebugMode) {
+    void log(var logstr) {
+      stdout.writeln("**** $logstr");
+    }
+    log("Creation Date: ${weather.creationDate}");
+    log("Source Credit: ${weather.sourceCredit}");
+    log("Time Layout Keys: ${weather.timeLayoutKeys}");
+    log("Start Times: ${weather.startTimes}");
+    log("End Times: ${weather.endTimes}");
+    /* Location Data */
+    log("Latitude: ${weather.latitude}, Longitude: ${weather.longitude}");
+    log("Area Description: ${weather.areaDescription}");
+    log("Elevation: ${weather.elevation} ${weather.elevationUnits}");
+    log(
+        "Dew Points (${weather.dewPointUnits}): ${weather
+            .dewPointTemperatures}");
+    log(
+        "Wind Chill (${weather.windChillUnits}): ${weather
+            .windChillTemperatures}");
+    log(
+        "Hourly Temps (${weather.hourlyTemperatureUnits}): ${weather
+            .hourlyTemperatures}");
+
+    log("Gusts (${weather.gustsWindSpeedUnits}): ${weather.gustsWindSpeeds}");
+    log(
+        "Sustained Winds (${weather.sustainedWindSpeedUnits}): ${weather
+            .sustainedWindSpeeds}");
+    log(
+        "Wind Directions (${weather.windDirectionUnits}): ${weather
+            .windDirections}");
+    log(
+        "Cloud Amounts (${weather.cloudAmountUnits}): ${weather.cloudAmounts}");
+    log(
+        "Precipitation Probabilities (${weather
+            .precipitationProbabilityUnits}): ${weather
+            .precipitationProbability}");
+    log(
+        "Relative Humidity (${weather.relativeHumidityUnits}): ${weather
+            .relativeHumidity}");
+    log("Hourly QPFS (${weather.hourlyQpfUnits}): ${weather.hourlyQpf}");
+    log("Weather Type: ${weather.weatherConditionsType}");
+    log("Weather Coverage: ${weather.weatherConditionsCoverage}");
   }
 }
