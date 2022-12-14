@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:snow_daze/screens/weatherScreens/add_new_weather_location_screen.dart';
+import 'package:snow_daze/screens/weatherScreens/listAddNewLocationWeatherScreen.dart';
 import 'package:snow_daze/widgets/side_drawer_widget.dart';
 
-import '../screens/weatherScreens/weather_page.dart';
+import '../screens/weatherScreens/listLocationWeatherScreen.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key : key);

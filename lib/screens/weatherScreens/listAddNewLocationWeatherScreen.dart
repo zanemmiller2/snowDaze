@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:snow_daze/screens/weatherScreens/addNewLocationDetailedWeatherScreen.dart';
+import 'package:snow_daze/screens/weatherScreens/detailedAddNewLocationWeatherScreen.dart';
 
 class AddNewLocation extends StatelessWidget {
   const AddNewLocation({super.key});
