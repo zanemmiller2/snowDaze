@@ -4,6 +4,10 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart';
 import 'package:intl/intl.dart';
+const kDebugMode = true;
+void log(var logstr) {
+  stdout.writeln("**** $logstr");
+}
 
 class WeatherForecast {
 
@@ -93,14 +97,18 @@ class WeatherForecast {
     try {
       final response = await http.get(Uri.parse(nwsSourceURL!));
       // success
-      print("REASON PHRASE ${response.request}");
+      if (kDebugMode) {
+        log("REASON PHRASE ${response.request}");
+      }
       if (response.statusCode == 200) {
         requestSuccess = true;
         xmlData = XmlDocument.parse(response.body);
       }
     } catch (e) {
       if (requestSuccess == false) {
-        print("####################  ERROR: $e");
+        if (kDebugMode) {
+          log("####################  ERROR: $e");
+        }
         retryFutureRequest(fetchXML(), 1000);
       }
     }
@@ -488,20 +496,18 @@ class WeatherForecast {
 }
 
 void main() async {
-  const kDebugMode = true;
+
   var latitude = "36.7311";
   var longitude = "-91.8531";
   WeatherForecast weather = WeatherForecast(latitude, longitude);
-  await weather.initialize();
-
+  await weather.initialize();   // sets the class attributes for the weather_forecast
 
   /* Meta Data */
   if (kDebugMode) {
-    void log(var logstr) {
-      stdout.writeln("**** $logstr");
-    }
+
     log("Creation Date: ${weather.creationDate}");
     log("Source Credit: ${weather.sourceCredit}");
+
     log("Time Layout Keys: ${weather.timeLayoutKeys}");
     log("Start Times: ${weather.startTimes}");
     log("End Times: ${weather.endTimes}");

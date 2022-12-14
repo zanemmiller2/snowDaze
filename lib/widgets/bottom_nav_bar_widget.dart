@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:snow_daze/widgets/side_drawer_widget.dart';
 
+import '../screens/weather_page.dart';
+
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key : key);
   
@@ -21,10 +23,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       Icons.downhill_skiing_outlined,
       size: 150,
     ),
-    Icon(
-      Icons.ac_unit_outlined,
-      size: 150,
-    ),
+    WeatherScreen(),
     Icon(
       Icons.traffic_outlined,
       size: 150,

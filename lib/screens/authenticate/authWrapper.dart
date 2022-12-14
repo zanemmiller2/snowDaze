@@ -1,3 +1,4 @@
+
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:snow_daze/screens/splash_page.dart';
