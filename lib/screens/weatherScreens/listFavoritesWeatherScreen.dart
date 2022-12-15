@@ -1,17 +1,21 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// page for weather repo
+
+
 import 'package:flutter/material.dart';
-import 'package:snow_daze/screens/weatherScreens/detailedAddNewLocationWeatherScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:snow_daze/screens/weatherScreens/detailedFavoritesWeatherScreen.dart';
 
-class AddNewLocation extends StatelessWidget {
-  const AddNewLocation({super.key});
 
-  Widget _buildAvailableLocationsListItem(BuildContext context, DocumentSnapshot document) {
+class WeatherScreen extends StatelessWidget {
+  const WeatherScreen({super.key});
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     return ListTile(
       title: Row(
         children: [
           Expanded(
             child: Text(
-              document["resortName"],
+              document["areaDescription"],
               style: Theme
                   .of(context)
                   .textTheme
@@ -24,7 +28,7 @@ class AddNewLocation extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(10.0),
             child: Text(
-              document["latitude"].toString(),
+             document["latitude"].toString(),
               style: Theme
                   .of(context)
                   .textTheme
@@ -46,16 +50,16 @@ class AddNewLocation extends StatelessWidget {
           ),
         ],
       ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    AddNewDetailedWeatherView(
-                        latitude: document["latitude"].toString(),
-                        longitude: document["longitude"].toString(), title: document["resortName"],)
-            ),
-          );
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  DetailedWeatherView(
+                      latitude: document["latitude"].toString(),
+                      longitude: document["longitude"].toString())
+          ),
+        );
       },
     );
   }
@@ -64,21 +68,29 @@ class AddNewLocation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("search all resorts page"),
+        title: const Text("weather page title"),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('resorts').snapshots(),
+        stream: FirebaseFirestore.instance.collection('weather_forecasts').snapshots(),
         builder: (context, snapshot) {
-          if(!snapshot.hasData){
-            return const Text("Loading...");
+          if (!snapshot.hasData) {
+            return const Text('Loading...');
           }
           return ListView.builder(
               itemExtent: 80.0,
               itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) => _buildAvailableLocationsListItem(context, snapshot.data!.docs[index]));
-        },
-      ),
-    );
-  }
+              itemBuilder: (context, index) =>
+                  _buildListItem(context, snapshot.data!.docs[index]));
+          }
+        ),
+      );
+    }
+}
 
+class MockWeatherInfo {
+
+  const MockWeatherInfo({required this.areaDescription, required this.latitude, required this.longitude});
+  final String areaDescription;
+  final String latitude;
+  final String longitude;
 }

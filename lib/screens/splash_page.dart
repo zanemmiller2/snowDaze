@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/bottom_nav_bar_widget.dart';
+import '../widgets/bottomNavBar.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});

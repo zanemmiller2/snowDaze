@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:snow_daze/screens/weatherScreens/listAddNewLocationWeatherScreen.dart';
-import 'package:snow_daze/widgets/side_drawer_widget.dart';
+import 'package:snow_daze/screens/weatherScreens/listAllLocationsWeatherScreen.dart';
+import 'package:snow_daze/widgets/sideDrawer.dart';
 
-import '../screens/weatherScreens/listLocationWeatherScreen.dart';
+import '../screens/weatherScreens/listFavoritesWeatherScreen.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key : key);
@@ -25,7 +25,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       size: 150,
     ),
     WeatherScreen(),
-    AddNewLocation(),
+    AllLocations(),
     Icon(
       Icons.settings_outlined,
       size: 150,

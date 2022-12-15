@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:snow_daze/models/weather_class.dart';
 
-class AddNewDetailedWeatherView extends StatefulWidget {
+import '../../widgets/snowFlakeProgressIndicator.dart';
+
+class DetailedAllWeatherView extends StatefulWidget {
   final String latitude;
   final String longitude;
   final String title;
 
-  const AddNewDetailedWeatherView({super.key, required this.latitude, required this.longitude, required this.title});
+  const DetailedAllWeatherView({super.key, required this.latitude, required this.longitude, required this.title});
 
   @override
-  State<AddNewDetailedWeatherView> createState() => _AddNewDetailedWeatherViewState();
+  State<DetailedAllWeatherView> createState() => _DetailedAllWeatherViewState();
 }
 
-class _AddNewDetailedWeatherViewState extends State<AddNewDetailedWeatherView> {
+class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
 
   late WeatherForecast detailedWeatherForecast;
 
@@ -120,7 +122,11 @@ class _AddNewDetailedWeatherViewState extends State<AddNewDetailedWeatherView> {
             ),
           );
         } else {
-          return const Text("Loading...");
+          return const Scaffold(
+            body: Center(
+              child: ProgressWithIcon()
+            ),
+          );
         }
       },
     );
