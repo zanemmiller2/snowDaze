@@ -11,6 +11,7 @@
 migrate_working_dir/
 
 /lib/auth/secrets.dart
+ios/Runner/GoogleService-Info.plist
 
 # IntelliJ related
 *.iml
