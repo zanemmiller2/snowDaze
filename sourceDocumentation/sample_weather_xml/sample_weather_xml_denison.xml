@@ -1,0 +1,293 @@
+<dwml xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:noNamespaceSchemaLocation="http://graphical.weather.gov/xml/DWMLgen/schema/DWML.xsd">
+    <head>
+        <product concise-name="tabular-digital" operational-mode="developmental" srsName="WGS 1984">
+            <creation-date refresh-frequency="PT1H">2022-12-12T17:43:21-06:00</creation-date>
+        </product>
+        <source>
+            <production-center>Dallas/Fort Worth, TX</production-center>
+            <credit>https://www.weather.gov/fwd</credit>
+            <more-information>https://www.nws.noaa.gov/forecasts/xml/</more-information>
+        </source>
+    </head>
+    <data>
+        <location>
+            <location-key>point1</location-key>
+            <point latitude="33.75" longitude="-96.55"/>
+            <area-description>2 Miles E Denison TX</area-description>
+            <height datum="mean sea level" height-units="feet">758</height>
+        </location>
+        <moreWeatherInformation applicable-location="point1">
+            //forecast.weather.gov/MapClick.php?lat=33.75&lon=-96.55&FcstType=digital
+        </moreWeatherInformation>
+        <time-layout time-coordinate="local" summarization="none">...</time-layout>
+        <parameters applicable-location="point1">
+            <temperature type="dew point" time-layout="k-p1h-n1-0">...</temperature>
+            <temperature type="wind chill" time-layout="k-p1h-n1-0">...</temperature>
+            <wind-speed type="sustained" time-layout="k-p1h-n1-0">...</wind-speed>
+            <cloud-amount type="total" units="percent" time-layout="k-p1h-n1-0">...</cloud-amount>
+            <probability-of-precipitation type="floating" units="percent" time-layout="k-p1h-n1-0">...</probability-of-precipitation>
+            <humidity type="relative" units="percent" time-layout="k-p1h-n1-0">...</humidity>
+            <direction type="wind" units="degrees true" time-layout="k-p1h-n1-0">...</direction>
+            <temperature type="hourly" time-layout="k-p1h-n1-0">...</temperature>
+            <wind-speed type="gust" time-layout="k-p1h-n1-0">...</wind-speed>
+            <hourly-qpf type="floating" units="inches" time-layout="k-p1h-n1-0">...</hourly-qpf>
+            <weather time-layout="k-p1h-n1-0">
+                <weather-conditions>
+                    <value weather-type="rain" coverage="likely"/>
+                    <value additive="and" weather-type="thunderstorms" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="likely"/>
+                    <value additive="and" weather-type="thunderstorms" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage=""/>
+                    <value additive="and" weather-type="thunderstorms" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage=""/>
+                    <value additive="and" weather-type="thunderstorms" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage=""/>
+                    <value additive="and" weather-type="thunderstorms" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="chance"/>
+                    <value additive="and" weather-type="thunderstorms" coverage="chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="chance"/>
+                    <value additive="and" weather-type="thunderstorms" coverage="chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="chance"/>
+                    <value additive="and" weather-type="thunderstorms" coverage="chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="likely"/>
+                    <value additive="and" weather-type="thunderstorms" coverage="likely"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="likely"/>
+                    <value additive="and" weather-type="thunderstorms" coverage="likely"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="likely"/>
+                    <value additive="and" weather-type="thunderstorms" coverage="likely"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage=""/>
+                    <value additive="and" weather-type="thunderstorms" coverage=""/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage=""/>
+                    <value additive="and" weather-type="thunderstorms" coverage=""/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage=""/>
+                    <value additive="and" weather-type="thunderstorms" coverage=""/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="likely"/>
+                    <value additive="and" weather-type="thunderstorms" coverage="likely"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="likely"/>
+                    <value additive="and" weather-type="thunderstorms" coverage="likely"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="likely"/>
+                    <value additive="and" weather-type="thunderstorms" coverage="likely"/>
+                </weather-conditions>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions>
+                    <value weather-type="rain" coverage="slight chance"/>
+                </weather-conditions>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+                <weather-conditions xsi:nil="true"/>
+            </weather>
+        </parameters>
+    </data>
+</dwml>
