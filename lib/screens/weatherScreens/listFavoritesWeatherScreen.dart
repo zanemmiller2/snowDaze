@@ -1,96 +1,125 @@
-// page for weather repo
+import 'dart:async';
 
-
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:snow_daze/screens/weatherScreens/detailedFavoritesWeatherScreen.dart';
+import 'package:flutter/material.dart';
+import 'package:snow_daze/screens/weatherScreens/detailedForecastScreen.dart';
+import 'package:weather/weather.dart';
 
+import '../../widgets/snowFlakeProgressIndicator.dart';
 
-class WeatherScreen extends StatelessWidget {
-  const WeatherScreen({super.key});
+class FavoritesLocations extends StatefulWidget {
+  const FavoritesLocations({super.key});
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+  @override
+  State<FavoritesLocations> createState() => _FavoritesLocationsState();
+}
+
+class _FavoritesLocationsState extends State<FavoritesLocations> {
+  List allResortsList = [];
+  List currentTemps = [];
+  List currentWeather = [];
+  bool _gotDataFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getSnapshots().whenComplete(() => setState(() {
+          _gotDataFavorite = true;
+        }));
+  }
+
+  Future<void> getSnapshots() async {
+    // get resorts from db
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection("weather_forecasts").get();
+    querySnapshot.docs.forEach((element) {
+      allResortsList.add(element.data());
+    });
+    // get current weather
+    WeatherFactory wf = WeatherFactory("44bdf703aef25b138d42bec7e5976cb7");
+    for (var resort in allResortsList) {
+      Weather w = await wf.currentWeatherByLocation(
+          double.parse(resort['latitude']), double.parse(resort['longitude']));
+      currentTemps.add(w.temperature?.fahrenheit?.toInt());
+      currentWeather.add({
+        'main': w.weatherMain,
+        'description': w.weatherDescription,
+        'icon': w.weatherIcon
+      });
+    }
+    // get forecast
+
+    // get pow alert status
+  }
+
+  Widget _buildAvailableLocationsListItem(BuildContext context, index) {
     return ListTile(
-      title: Row(
-        children: [
-          Expanded(
-            child: Text(
-              document["areaDescription"],
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .subtitle1,
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                allResortsList[index]['resortName'],
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
             ),
-          ),
-          Container(
-            decoration: const BoxDecoration(
-              color: Color(0xffddddff),
+            Container(
+              decoration: const BoxDecoration(
+                color: Color(0xffddddff),
+              ),
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                currentWeather[index]['main'].toString(),
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
             ),
-            padding: const EdgeInsets.all(10.0),
-            child: Text(
-             document["latitude"].toString(),
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .subtitle1,
+            Container(
+              decoration: const BoxDecoration(
+                color: Color(0xffddddff),
+              ),
+              padding: const EdgeInsets.all(10.0),
+              child: Image.network(
+                'http://openweathermap.org/img/w/${currentWeather[index]["icon"]}.png',
+              ),
             ),
-          ),
-          Container(
-            decoration: const BoxDecoration(
-              color: Color(0xffddddff),
+            Container(
+              decoration: const BoxDecoration(
+                color: Color(0xffddddff),
+              ),
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                '${currentTemps[index].toString()}\u00b0',
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
             ),
-            padding: const EdgeInsets.all(10.0),
-            child: Text(
-              document["longitude"].toString(),
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .subtitle1,
-            ),
-          ),
-        ],
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  DetailedWeatherView(
-                      latitude: document["latitude"].toString(),
-                      longitude: document["longitude"].toString())
-          ),
-        );
-      },
-    );
+          ],
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DetailedAllWeatherView(
+                      latitude: allResortsList[index]['latitude'],
+                      longitude: allResortsList[index]['longitude'],
+                      title: allResortsList[index]['resortName'],
+                    )),
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("weather page title"),
-      ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('weather_forecasts').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Text('Loading...');
-          }
-          return ListView.builder(
-              itemExtent: 80.0,
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) =>
-                  _buildListItem(context, snapshot.data!.docs[index]));
-          }
-        ),
-      );
+    if (!_gotDataFavorite) {
+      return const ProgressWithIcon();
     }
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text("search all resorts page"),
+        ),
+        body: ListView.builder(
+            itemExtent: 80.0,
+            itemCount: allResortsList.length,
+            itemBuilder: (context, index) =>
+                _buildAvailableLocationsListItem(context, index)));
+  }
 }
 
-class MockWeatherInfo {
-
-  const MockWeatherInfo({required this.areaDescription, required this.latitude, required this.longitude});
-  final String areaDescription;
-  final String latitude;
-  final String longitude;
-}

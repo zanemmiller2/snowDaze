@@ -24,13 +24,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
       Icons.downhill_skiing_outlined,
       size: 150,
     ),
-    WeatherScreen(),
+    FavoritesLocations(),
     AllLocations(),
     Icon(
       Icons.settings_outlined,
       size: 150,
     ),
-
   ];
   
   @override
