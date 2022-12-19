@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:snow_daze/screens/weatherScreens/detailedForecastScreen.dart';
 import 'package:weather/weather.dart';
 
+import '../../auth/secrets.dart';
 import '../../widgets/snowFlakeProgressIndicator.dart';
 
 class AllLocations extends StatefulWidget {
@@ -37,7 +38,7 @@ class _AllLocationsState extends State<AllLocations> {
     });
 
     // get current weather
-    WeatherFactory wf = WeatherFactory("44bdf703aef25b138d42bec7e5976cb7");
+    WeatherFactory wf = WeatherFactory(openWeatherAPI);
     for (var resort in allResortsList) {
       Weather w = await wf.currentWeatherByLocation(
           double.parse(resort['latitude']), double.parse(resort['longitude']));
