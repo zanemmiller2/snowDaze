@@ -1,0 +1,33 @@
+{
+  "lat": 46.9401,
+  "lon": -121.4732,
+  "timezone": "America/Los_Angeles",
+  "timezone_offset": -28800,
+  "data": [
+    {
+      "dt": 1670659200,
+      "sunrise": 1670686843,
+      "sunset": 1670717825,
+      "temp": 21.65,
+      "feels_like": 13.59,
+      "pressure": 1002,
+      "humidity": 97,
+      "dew_point": 21.02,
+      "clouds": 100,
+      "wind_speed": 6.35,
+      "wind_deg": 118,
+      "wind_gust": 9.22,
+      "weather": [
+        {
+          "id": 601,
+          "main": "Snow",
+          "description": "snow",
+          "icon": "13n"
+        }
+      ],
+      "snow": {
+        "3h": 4.75
+      }
+    }
+  ]
+}

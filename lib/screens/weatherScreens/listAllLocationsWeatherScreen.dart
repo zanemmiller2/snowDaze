@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:snow_daze/screens/weatherScreens/detailedForecastScreen.dart';
+import 'package:snow_daze/utilities/apiCallURLs.dart';
 import 'package:weather/weather.dart';
 
 import '../../auth/secrets.dart';
@@ -38,7 +39,7 @@ class _AllLocationsState extends State<AllLocations> {
     });
 
     // get current weather
-    WeatherFactory wf = WeatherFactory(openWeatherAPI);
+    WeatherFactory wf = WeatherFactory(openWeatherAPIKey);
     for (var resort in allResortsList) {
       Weather w = await wf.currentWeatherByLocation(
           double.parse(resort['latitude']), double.parse(resort['longitude']));
@@ -102,7 +103,9 @@ class _AllLocationsState extends State<AllLocations> {
             ),
           ],
         ),
-        onTap: () {
+        onTap: () async {
+          // var url = getCurrentWeatherAPIUrl(latitude: allResortsList[index]['latitude'], longitude: allResortsList[index]['longitude']);
+          // CurrentWeather? currentWeatherObj = await fetchCurrentWeatherForecast(url);
           Navigator.push(
             context,
             MaterialPageRoute(

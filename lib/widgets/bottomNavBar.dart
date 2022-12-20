@@ -24,7 +24,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
       Icons.downhill_skiing_outlined,
       size: 150,
     ),
-    FavoritesLocations(),
+  Icon(
+    Icons.ac_unit_outlined,
+    size: 150,
+  ),
     AllLocations(),
     Icon(
       Icons.settings_outlined,
