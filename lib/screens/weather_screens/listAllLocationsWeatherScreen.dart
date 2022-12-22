@@ -29,9 +29,13 @@ class _AllLocationsState extends State<AllLocations> {
   @override
   void initState() {
     super.initState();
-    getSnapshots().whenComplete(() => setState(() {
+    getSnapshots().whenComplete(() {
+      if(mounted) {
+        setState(() {
           _gotData = true;
-        }));
+        });
+      }
+    });
   }
 
   Future<void> getSnapshots() async {
@@ -136,6 +140,7 @@ class _AllLocationsState extends State<AllLocations> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO -- convert to stream builder?
     if (!_gotData) {
       return const ProgressWithIcon();
     }
