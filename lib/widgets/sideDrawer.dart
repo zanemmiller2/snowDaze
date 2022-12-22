@@ -1,7 +1,8 @@
-
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+// Project imports:
 import '../services/authService.dart';
 
 class SideDrawer extends StatefulWidget {

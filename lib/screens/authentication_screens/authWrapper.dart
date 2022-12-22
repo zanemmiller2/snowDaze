@@ -1,10 +1,13 @@
-
-import 'package:provider/provider.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:snow_daze/screens/splash_page.dart';
 
-import '../../models/FirebaseUser.dart';
-import 'auth_handler.dart';
+// Package imports:
+import 'package:provider/provider.dart';
+
+// Project imports:
+import 'package:snow_daze/screens/splash_page.dart';
+import '../../models/users/firebaseUser.dart';
+import 'authHandler.dart';
 
 class Wrapper extends StatelessWidget{
   const Wrapper({super.key});

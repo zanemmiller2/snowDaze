@@ -1,5 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
 import '../widgets/bottomNavBar.dart';
 
 class MyHomePage extends StatefulWidget {
