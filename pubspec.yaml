@@ -47,6 +47,9 @@ dependencies:
   cloud_firestore: ^4.2.0
   flutter_share: ^2.0.0
   envied:
+  import_sorter: ^4.6.0
+  lat_lng_to_timezone: ^0.2.0
+  timezone: ^0.9.0
 
 dev_dependencies:
   flutter_test:

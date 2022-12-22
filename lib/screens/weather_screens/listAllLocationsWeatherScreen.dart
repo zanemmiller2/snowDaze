@@ -1,11 +1,15 @@
+// Dart imports:
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:snow_daze/screens/weatherScreens/detailedForecastScreen.dart';
-import 'package:snow_daze/utilities/apiCallURLs.dart';
+
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:weather/weather.dart';
 
+// Project imports:
+import 'package:snow_daze/screens/weather_screens/detailedForecastScreen.dart';
 import '../../auth/secrets.dart';
 import '../../widgets/snowFlakeProgressIndicator.dart';
 
@@ -61,8 +65,8 @@ class _AllLocationsState extends State<AllLocations> {
     super.dispose();
   }
 
-  /* BUilds each list tile */
   Widget _buildAvailableLocationsListItem(BuildContext context, index) {
+    /// builds a list tile for each resort
     return ListTile(
         title: Row(
           children: [
@@ -88,9 +92,19 @@ class _AllLocationsState extends State<AllLocations> {
               ),
               padding: const EdgeInsets.all(10.0),
               child: Image.network(
-                'http://openweathermap.org/img/w/${currentWeather[index]["icon"]}.png',
+                'https://openweathermap.org/img/w/${currentWeather[index]["icon"]}.png',
+                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                          : null,
+                    ),
+                  );
+                }),
               ),
-            ),
             Container(
               decoration: const BoxDecoration(
                 color: Color(0xffddddff),
