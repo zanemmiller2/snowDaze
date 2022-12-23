@@ -7,7 +7,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 
-String convertUTCToLocalTimeMMMd (String time) => DateFormat.MMMd().add_jm().format(DateTime.parse(time).toLocal());
+String convertUTCToLocalTimeMMMd (String time) => DateFormat.MMMEd().add_jm().format(DateTime.parse(time).toLocal());
 
 DateTime convertUTCtoDateTime (String time) => DateTime.parse(time).toLocal();
 
@@ -35,6 +35,6 @@ DateTime convertToLocationLocalTime (String lat, String long, int time) {
 
 }
 
-String dateTimeToHumanReadable (DateTime time) => DateFormat.MMMd().add_jm().format(time);
+String dateTimeToHumanReadable (DateTime time) => DateFormat.MMMEd().add_jm().format(time);
 
 
