@@ -5,7 +5,7 @@
     and then indexing a json object for improved stability and reliability.
 ** The class model was also restructured to better match the structure of a different site using the
     digitalDWML forecast type instead of dwml.
-** The new file is in lib/models/weather_class.dart
+** The new file is in lib/models/nwsWeatherClass.dart
 
 */
 

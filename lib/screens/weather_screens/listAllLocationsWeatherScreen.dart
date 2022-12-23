@@ -69,7 +69,7 @@ class _AllLocationsState extends State<AllLocations> {
     super.dispose();
   }
 
-  Widget _buildAvailableLocationsListItem(BuildContext context, index) {
+  Widget _buildAvailableLocationsListItem(BuildContext context, index, allResortsList) {
     /// builds a list tile for each resort
     return ListTile(
         title: Row(
@@ -122,8 +122,6 @@ class _AllLocationsState extends State<AllLocations> {
           ],
         ),
         onTap: () async {
-          // var url = getCurrentWeatherAPIUrl(latitude: allResortsList[index]['latitude'], longitude: allResortsList[index]['longitude']);
-          // CurrentWeather? currentWeatherObj = await fetchCurrentWeatherForecast(url);
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -152,6 +150,6 @@ class _AllLocationsState extends State<AllLocations> {
             itemExtent: 80.0,
             itemCount: allResortsList.length,
             itemBuilder: (context, index) =>
-                _buildAvailableLocationsListItem(context, index)));
+                _buildAvailableLocationsListItem(context, index, allResortsList)));
   }
 }
