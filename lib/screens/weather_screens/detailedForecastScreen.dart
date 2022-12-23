@@ -157,8 +157,11 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
   }
 
   Widget _buildAlertsWidget(BuildContext context) {
-    /// List
+    /// List tile view of all active alerts -
+    /// returns the alert tiles if there are any alerts.
+    /// Returns an empty widget if there are no alerts.
 
+    // if there are alerts, return the alert widget list
     if (detailedLocationForecastData.alerts.isNotEmpty) {
       return ListView.builder(
         shrinkWrap: true,
@@ -206,6 +209,7 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
               });
         },
       );
+      // no alerts -- return an empty widget
     } else {
       return const SizedBox.shrink();
     }
@@ -278,6 +282,7 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
   }
 
   Widget _buildCurrentWeatherHourlySummary(BuildContext context) {
+    /// Builds an hourly horizontal scroll bar of hourly data for the next 24 hours.
     return ListView(
       scrollDirection: Axis.horizontal,
     );
