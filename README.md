@@ -1,5 +1,19 @@
 # snowDaze
 
+Author:
+Zane
+Miller<p>
+Date:
+Dec
+2022<p>
+Contact:
+
+    - Email: zanemmiller2@gmail.com
+    - Twitter: 
+    - Website: 
+    - LinkedIn:
+    - GitHub: 
+
 <p>
 snowDaze is a full stack app that provides users with the tools and resources needed 
 to make the best informed decision about which mountain to ride on a given day. The  
