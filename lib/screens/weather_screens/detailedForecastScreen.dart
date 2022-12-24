@@ -26,8 +26,6 @@ class DetailedAllWeatherView extends StatefulWidget {
       required this.longitude,
       required this.title});
 
-  get snowFall => null;
-
   @override
   State<DetailedAllWeatherView> createState() => _DetailedAllWeatherViewState();
 }
@@ -117,97 +115,96 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
               Flexible(
                   flex: 1,
                   fit: FlexFit.loose,
-                  child: _buildAlertsWidget(context)),
+                  child: alertsWidget(context)),
               // Current Detailed
               Flexible(
                   flex: 1,
                   fit: FlexFit.loose,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [_buildCurrentWeatherDetailSummary(context)],
+                    children: [currentWeatherSummaryWidget(context)],
                   )),
+              // 24 hourly
+              hourlyWeatherWidget(context),
               // Daily List
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.blueAccent)),
-                  child: Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        child: const Text('8 Day Forecast'),
-                      ),
-                      ListView.builder(
-                          shrinkWrap: true,
-                          physics: const ScrollPhysics(),
-                          itemCount: detailedLocationForecastData.daily.length,
-                          itemBuilder: (context, index) =>
-                              _buildListViewDailyWidget(
-                                  context, index, latitude, longitude)),
-                    ],
-                  ),
-                ),
-              ),
+              dailyWeatherWidgets(context),
               // Current detailed gridview
-              _buildDetailedCurrentGridView(context),
+              currentWeatherGridWidget(context),
             ],
           ),
         ));
   }
 
-  Widget _buildAlertsWidget(BuildContext context) {
+  /*------------------------------------
+  *           ALERTS
+  * ----------------------------------*/
+  Widget alertsWidget(BuildContext context) {
     /// List tile view of all active alerts -
     /// returns the alert tiles if there are any alerts.
     /// Returns an empty widget if there are no alerts.
 
     // if there are alerts, return the alert widget list
     if (detailedLocationForecastData.alerts.isNotEmpty) {
-      return ListView.builder(
-        shrinkWrap: true,
-        itemCount: detailedLocationForecastData.alerts.length,
-        itemBuilder: (context, index) {
-          var effectEndTime = dateTimeToHumanReadable(convertToLocationLocalTime(detailedLocationForecastData.lat, detailedLocationForecastData.lon, detailedLocationForecastData.alerts[index]['end']));
-          var effectStartTime = dateTimeToHumanReadable(convertToLocationLocalTime(detailedLocationForecastData.lat, detailedLocationForecastData.lon, detailedLocationForecastData.alerts[index]['start']));
-          return ListTile(
-              title: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Title
-                  Flexible(
-                      fit: FlexFit.loose,
-                      child: Text(
-                        '${detailedLocationForecastData.alerts[index]['event']}',
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      )),
-                  // In effect until ...
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: Text(
-                      'In effect from $effectStartTime\n until $effectEndTime',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  // Sender
-                  Flexible(
-                      fit: FlexFit.loose,
-                      child: Text(
-                        '${detailedLocationForecastData.alerts[index]['sender_name']}',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      )),
-                ],
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.blueAccent)),
+          child: Column(
+            children: [
+              Container(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  alignment: Alignment.centerLeft,
+                  child: const Text('Weather Alerts')),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: detailedLocationForecastData.alerts.length,
+                itemBuilder: (context, index) {
+                  var effectEndTime = dateTimeToHumanReadable(convertToLocationLocalTime(detailedLocationForecastData.lat, detailedLocationForecastData.lon, detailedLocationForecastData.alerts[index]['end']));
+                  var effectStartTime = dateTimeToHumanReadable(convertToLocationLocalTime(detailedLocationForecastData.lat, detailedLocationForecastData.lon, detailedLocationForecastData.alerts[index]['start']));
+                  return ListTile(
+                      title: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Title
+                          Flexible(
+                              fit: FlexFit.loose,
+                              child: Text(
+                                '${detailedLocationForecastData.alerts[index]['event']}',
+                                style: Theme.of(context).textTheme.headlineSmall,
+                              )),
+                          // In effect until ...
+                          Flexible(
+                            fit: FlexFit.loose,
+                            child: Text(
+                              'In effect from $effectStartTime\n until $effectEndTime',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          // Sender
+                          Flexible(
+                              fit: FlexFit.loose,
+                              child: Text(
+                                '${detailedLocationForecastData.alerts[index]['sender_name']}',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              )),
+                        ],
+                      ),
+                      // onTap() => longer detail
+                      onTap: () async {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailedAlertScreen(
+                                    detailedLocationForecastDataAlerts:
+                                        detailedLocationForecastData.alerts[index], effectStartTime: effectStartTime, effectEndTime: effectEndTime)));
+                      });
+                },
               ),
-              // onTap() => longer detail
-              onTap: () async {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DetailedAlertScreen(
-                            detailedLocationForecastDataAlerts:
-                                detailedLocationForecastData.alerts[index], effectStartTime: effectStartTime, effectEndTime: effectEndTime)));
-              });
-        },
+            ],
+          ),
+        ),
       );
       // no alerts -- return an empty widget
     } else {
@@ -215,76 +212,228 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
     }
   }
 
-  Widget _buildCurrentWeatherDetailSummary(BuildContext context) {
+  /*------------------------------------
+  *        CURRENT SUMMARY
+  * ----------------------------------*/
+  Widget currentWeatherSummaryWidget(BuildContext context) {
     /// builds the current weather top widget bar
-    return Container(
-      alignment: Alignment.center,
-      padding:
-          const EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-      child: Row(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        padding: const EdgeInsets.only(left: 10.0),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.blueAccent)),
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.centerLeft,
+              child: const Text('Current Weather Summary'),
+            ),
+            Row(
+              children: [
+                // current temp
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Text(
+                    'Current Temp\n${(detailedLocationForecastDataCurrent['temp'] / 1).floor()}\u{00B0}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                // feels like
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Text(
+                    'Feels Like\n${(detailedLocationForecastDataCurrent['feels_like'] / 1).floor()}\u{00B0}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                // time
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Text(
+                    'Date/Time\n'
+                    '${dateTimeToHumanReadable(convertToLocationLocalTime(detailedLocationForecastData.lat, detailedLocationForecastData.lon, detailedLocationForecastDataCurrent['dt']))}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                // time
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Text(
+                    'Humidity\n${detailedLocationForecastDataCurrent['humidity']}%',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                // wind
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Text(
+                    'Wind\n${detailedLocationForecastDataCurrent['wind_speed']} mph\n'
+                    '${detailedLocationForecastDataCurrent['wind_gust']} gusts',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                Transform.rotate(
+                    angle:
+                        detailedLocationForecastDataCurrent['wind_deg'] * (pi / 180),
+                    child: const Icon(Icons.north)),
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Text(
+                    'Weather\n${detailedLocationForecastDataCurrent['weather'][0]['description']}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /*------------------------------------
+  *           HOURLY
+  * ----------------------------------*/
+  Widget hourlyWeatherWidget(BuildContext context) {
+    /// Builds an hourly horizontal scroll bar of hourly data for the next 24 hours.
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.blueAccent)),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(left: 10.0),
+              alignment: Alignment.centerLeft,
+              child: const Text('24 Hour Forecast'),
+            ),
+            SizedBox(
+              height: 100.0,
+              child: ListView.separated(
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                itemCount: 24,
+                itemBuilder: (BuildContext context, int index) => _buildIndividualHourComponents(context, index),
+                separatorBuilder: (BuildContext context, int index) => const VerticalDivider(
+                  width: 10,
+                  thickness: 1,
+                  indent: 10,
+                  endIndent: 10,
+                  color: Colors.grey,
+
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIndividualHourComponents(BuildContext context, index) {
+    /// builds the individual hour widget
+    String hourTime;
+    if(index == 0) {
+      hourTime = 'Now';
+    } else {
+      hourTime = convertEpochTimeTo12Hour(detailedLocationForecastData.hourly[index]['dt']);
+    }
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          // current temp
-          Flexible(
-            fit: FlexFit.loose,
-            child: Text(
-              'Current Temp\n${(detailedLocationForecastDataCurrent['temp'] / 1).floor()}',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-          // feels like
-          Flexible(
-            fit: FlexFit.loose,
-            child: Text(
-              'Feels Like\n${(detailedLocationForecastDataCurrent['feels_like'] / 1).floor()}',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
           // time
-          Flexible(
-            fit: FlexFit.loose,
-            child: Text(
-              'Date/Time\n'
-              '${dateTimeToHumanReadable(convertToLocationLocalTime(detailedLocationForecastData.lat, detailedLocationForecastData.lon, detailedLocationForecastDataCurrent['dt']))}',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+          Expanded(
+              child: Text(hourTime)
           ),
-          // time
-          Flexible(
-            fit: FlexFit.loose,
-            child: Text(
-              'Humidity\n${detailedLocationForecastDataCurrent['humidity']}%',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+          // weather icon
+          Expanded(
+              child: getHourlyWeatherIcon(index) ?? Text('${detailedLocationForecastData.hourly[index]['weather'][0]['main']}')
           ),
-          // time
-          Flexible(
-            fit: FlexFit.loose,
-            child: Text(
-              'Wind\n${detailedLocationForecastDataCurrent['wind_speed']} mph\n'
-              '${detailedLocationForecastDataCurrent['wind_gust']} gusts',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-          Transform.rotate(
-              angle:
-                  detailedLocationForecastDataCurrent['wind_deg'] * (pi / 180),
-              child: const Icon(Icons.north)),
-          Flexible(
-            fit: FlexFit.loose,
-            child: Text(
-              'Weather\n${detailedLocationForecastDataCurrent['weather'][0]['description']}',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
+          // temperature
+          Expanded(
+              child: Text('${(detailedLocationForecastData.hourly[index]['temp'] / 1).ceil()}\u{00B0}')
+          )
         ],
       ),
     );
   }
 
-  Widget _buildCurrentWeatherHourlySummary(BuildContext context) {
-    /// Builds an hourly horizontal scroll bar of hourly data for the next 24 hours.
-    return ListView(
-      scrollDirection: Axis.horizontal,
+  Widget? getHourlyWeatherIcon(index) {
+    /// Gets the weather icon for the hourly weather widget based on forecasted weather behavior
+    Widget? weatherIcon;
+    if (detailedLocationForecastData.hourly[index]['weather'][0]['main'] ==
+        'Snow') {
+      weatherIcon = const Icon(Icons.ac_unit, color: Colors.blue);
+    } else
+    if (detailedLocationForecastData.hourly[index]['weather'][0]['main'] ==
+        'Rain') {
+      weatherIcon = const Icon(Icons.water_drop, color: Colors.blue);
+    } else
+    if (detailedLocationForecastData.hourly[index]['weather'][0]['main'] ==
+        'Clouds') {
+      weatherIcon = const Icon(Icons.cloud, color: Colors.blue);
+    } else
+    if (detailedLocationForecastData.hourly[index]['weather'][0]['main'] == 'Thunder') {
+      weatherIcon = const Icon(Icons.thunderstorm, color: Colors.blue);
+    } else if(detailedLocationForecastData.hourly[index]['weather'][0]['main'] == 'Clear') {
+      if(convertEpochToDateTime(detailedLocationForecastData.hourly[index]['dt']).hour >= 19 || convertEpochToDateTime(detailedLocationForecastData.hourly[index]['dt']).hour <= 7) {
+        weatherIcon = const Icon(Icons.nightlight, color: Colors.blue);
+      } else {
+        weatherIcon = const Icon(Icons.wb_sunny, color: Colors.blue);
+      }
+    } else {
+      weatherIcon = null;
+    }
+    return weatherIcon;
+  }
+
+  /*------------------------------------
+  *           DAILY WEATHER
+  * ----------------------------------*/
+  Widget dailyWeatherWidgets (BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.blueAccent)),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(left: 10.0),
+              alignment: Alignment.centerLeft,
+              child: const Text('8 Day Forecast'),
+            ),
+            const Divider(
+              height: 10,
+              thickness: 1,
+              indent: 10,
+              endIndent: 10,
+              color: Colors.grey,
+            ),
+            ListView.separated(
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                itemCount: detailedLocationForecastData.daily.length,
+                itemBuilder: (context, index) =>
+                    _buildListViewDailyWidget(
+                        context, index, latitude, longitude),
+              separatorBuilder: (BuildContext context, int index) => const Divider(
+                height: 10,
+                thickness: 1,
+                indent: 10,
+                endIndent: 10,
+                color: Colors.grey,
+              ),),
+          ],
+        ),
+      ),
     );
   }
 
@@ -298,8 +447,8 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
 
     List dailyMinMaxTemp =
         getDailyTemperatures(detailedLocationForecastData, index);
-    String minTemp = dailyMinMaxTemp[0].toString();
-    String maxTemp = dailyMinMaxTemp[1].toString();
+    String minTemp = '${(dailyMinMaxTemp[0] / 1).ceil().toString()}\u{00B0}';
+    String maxTemp = '${(dailyMinMaxTemp[1] / 1).ceil().toString()}\u{00B0}';
 
     // use the larger of the two predictions between NWS and OpenWeather
     var dayStartTime =
@@ -313,39 +462,46 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
       }
     });
 
+    String getDayOfWeek(index) {
+      if(index == 0){
+        return 'Today';
+      } else {
+        return daysOfWeekAbr[convertToLocationLocalTime(latitude, longitude, detailedLocationForecastData.daily[index]['dt']).weekday];
+      }
+    }
+
     return ListTile(
         title: Row(
           mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             // Day and Date
             Expanded(
-              flex: 1,
               child: Text(
-                daysOfWeekAbr[convertToLocationLocalTime(latitude, longitude,
-                        detailedLocationForecastData.daily[index]['dt'])
-                    .weekday],
+                getDayOfWeek(index),
                 style: Theme.of(context).textTheme.subtitle1,
               ),
             ),
-            // precip probability
-            Expanded(
-              flex: 1,
+            // Precipitation probability
+            Flexible(
               child: Text(
-                'Chance\n${detailedLocationForecastData.daily[index]['pop'] * 100}%',
+                'Chance\n${(detailedLocationForecastData.daily[index]['pop'] * 100 / 1).ceil()}%',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
             ),
             // temperatures
-            Expanded(
-              flex: 1,
-              child: Text(
-                'Temperatures\nMin: $minTemp\n Max: $maxTemp',
-                style: Theme.of(context).textTheme.subtitle1,
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  'Temperatures\nMin: $minTemp\n Max: $maxTemp',
+                  style: Theme.of(context).textTheme.subtitle1,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
             // snowfall
-            Expanded(
-              flex: 1,
+            Flexible(
               child: Text(
                 'Precipitation\n$weatherType $dailyQpf',
                 style: Theme.of(context).textTheme.subtitle1,
@@ -366,13 +522,32 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
         });
   }
 
-  Widget _buildDetailedCurrentGridView(BuildContext context) {
+  /*------------------------------------
+  *           DETAIL GRID
+  * ----------------------------------*/
+  Widget currentWeatherGridWidget(BuildContext context) {
     /// builds the large widget grid with current details
-    List detailGridItems = [
-      'Large Temp HERE',
-      'Large Humidity HERE',
-      'Large Wind HERE',
-      'Large Precipitation HERE'
+
+    Widget precipitationIcon;
+
+    if(detailedLocationForecastDataCurrent['weather'][0]['main'] == 'Snow') {
+      precipitationIcon = const Icon(Icons.ac_unit, size: 100.0, color: Colors.blue);
+    } else if(detailedLocationForecastDataCurrent['weather'][0]['main'] == 'Rain') {
+        precipitationIcon = const Icon(Icons.water_drop, size: 100.0, color: Colors.blue);
+    } else if(detailedLocationForecastDataCurrent['weather'][0]['main'] == 'Thunder') {
+        precipitationIcon = const Icon(Icons.thunderstorm, size: 100.0, color: Colors.blue);
+    } else {
+      precipitationIcon = const Icon(Icons.water_drop, size: 100.0, color: Colors.blue,);
+    }
+
+    List<Widget> detailGridItems = [
+      const Icon(Icons.thermostat, size: 100.0, color: Colors.blue),
+      Image.asset('assets/images/humidity_icon.png'),
+      Transform.rotate(
+          angle:
+          detailedLocationForecastDataCurrent['wind_deg'] * (pi / 180),
+          child: const Icon(Icons.north, size: 100.0, color: Colors.blue)),
+      precipitationIcon
     ];
     return GridView.builder(
         physics: ScrollPhysics(),
@@ -386,7 +561,7 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
                 child: Align(
                   alignment: Alignment.center,
                   child:
-                      Text(detailGridItems[index], textAlign: TextAlign.center),
+                      detailGridItems[index],
                 ),
                 onTap: () async {
                   Navigator.push(
@@ -397,6 +572,8 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
           );
         });
   }
+
+
 } // class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView>
 
 double convertMmToIn(qpf) {

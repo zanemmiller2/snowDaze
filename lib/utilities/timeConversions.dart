@@ -38,3 +38,4 @@ DateTime convertToLocationLocalTime (String lat, String long, int time) {
 String dateTimeToHumanReadable (DateTime time) => DateFormat.MMMEd().add_jm().format(time);
 
 
+String convertEpochTimeTo12Hour (int time) => (DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(time * 1000))).toString();
