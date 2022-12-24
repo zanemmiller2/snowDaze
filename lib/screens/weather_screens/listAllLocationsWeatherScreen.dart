@@ -29,8 +29,11 @@ class _AllLocationsState extends State<AllLocations> {
   @override
   void initState() {
     super.initState();
+    // Gets the document snapshot of all resorts from firestore db,
+    // checks if the widget is mounted before setting the _gotData to true,
+    // signalling the widget that it is ok to build
     getSnapshots().whenComplete(() {
-      if(mounted) {
+      if (mounted) {
         setState(() {
           _gotData = true;
         });
@@ -39,19 +42,29 @@ class _AllLocationsState extends State<AllLocations> {
   }
 
   Future<void> getSnapshots() async {
-    // get resorts from db
+    /// Future void function that gets the list of documents in 'resorts'
+    /// and adds the data of each document to allResortsList list
+
+    // get each document
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection("resorts").get();
-    querySnapshot.docs.forEach((element) {
+    // add each document.data to the allResortsList list
+    for (var element in querySnapshot.docs) {
       allResortsList.add(element.data());
-    });
+    }
 
-    // get current weather
+    // instantiate a WeatherFactory object
     WeatherFactory wf = WeatherFactory(openWeatherAPIKey);
+
     for (var resort in allResortsList) {
+      // for each resort in list, get the current weather at that (lat, long) location
       Weather w = await wf.currentWeatherByLocation(
           double.parse(resort['latitude']), double.parse(resort['longitude']));
+
+      // add the locations current temperatures as integers to currentTemps list
       currentTemps.add(w.temperature?.fahrenheit?.toInt());
+
+      // add the locations current weather descriptions to currentWeather map
       currentWeather.add({
         'main': w.weatherMain,
         'description': w.weatherDescription,
