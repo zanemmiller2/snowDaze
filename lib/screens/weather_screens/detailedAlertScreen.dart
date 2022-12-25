@@ -14,10 +14,8 @@ class DetailedAlertScreen extends StatelessWidget {
         title: const Text('Severe Weather Alert'),
       ),
       body: SingleChildScrollView (
-        padding: EdgeInsets.all(10.0),
-        child: Column (
-          mainAxisSize: MainAxisSize.min,
-          children: [
+        padding: const EdgeInsets.all(10.0),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
             Flexible(
                 fit: FlexFit.loose,
                 child: Text(

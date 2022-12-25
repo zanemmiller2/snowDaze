@@ -427,10 +427,13 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
     String weatherType = precipitation[0];
     String dailyQpf = precipitation[1];
 
-    List dailyMinMaxTemp =
-        getDailyTemperatures(detailedLocationForecastData, index);
-    String minTemp = '${(dailyMinMaxTemp[0] / 1).ceil().toString()}\u{00B0}';
-    String maxTemp = '${(dailyMinMaxTemp[1] / 1).ceil().toString()}\u{00B0}';
+    List dailyTemps = getDailyTemperatures(detailedLocationForecastData, index);
+    String minTemp = '${(dailyTemps[0] / 1).ceil().toString()}\u{00B0}';
+    String maxTemp = '${(dailyTemps[1] / 1).ceil().toString()}\u{00B0}';
+    String mornTemp = '${(dailyTemps[2] / 1).ceil().toString()}\u{00B0}';
+    String dayTemp = '${(dailyTemps[3] / 1).ceil().toString()}\u{00B0}';
+    String eveTemp = '${(dailyTemps[4] / 1).ceil().toString()}\u{00B0}';
+    String nightTemp = '${(dailyTemps[5] / 1).ceil().toString()}\u{00B0}';
 
     // use the larger of the two predictions between NWS and OpenWeather
     var dayStartTime =
@@ -648,9 +651,22 @@ List<String> getDailyPrecipitation(detailedLocationForecastData, index) {
 
 List<num> getDailyTemperatures(detailedLocationForecastData, index) =>
 
-    /// get the daily min and max temperatures and returns them as a list
-// TODO -- include other temperature values here (e.g, dew point, wind chill)
+    /// get the daily min, max, morning, day, evening, and night temperatures and returns them as a list
     [
       detailedLocationForecastData.daily[index]['temp']['min'],
-      detailedLocationForecastData.daily[index]['temp']['max']
+      detailedLocationForecastData.daily[index]['temp']['max'],
+      detailedLocationForecastData.daily[index]['temp']['morn'],
+      detailedLocationForecastData.daily[index]['temp']['day'],
+      detailedLocationForecastData.daily[index]['temp']['eve'],
+      detailedLocationForecastData.daily[index]['temp']['night']
+    ];
+
+List<num> getDailyWindChillTemps(detailedLocationForecastData, index) =>
+
+    /// get the daily morning, day, evening, and night wind chill temperatures and returns them as a list
+    [
+      detailedLocationForecastData.daily[index]['feels_like']['morn'],
+      detailedLocationForecastData.daily[index]['feels_like']['day'],
+      detailedLocationForecastData.daily[index]['feels_like']['eve'],
+      detailedLocationForecastData.daily[index]['feels_like']['night']
     ];
