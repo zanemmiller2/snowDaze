@@ -72,3 +72,8 @@ better informed decisions on conditions and safety for the selected resort.
 ### Twitter Resources
 
 ### Traffic Resources
+
+### UV Resources
+<p>
+    <a href="https://www.epa.gov/sites/default/files/documents/uviguide.pdf">EPA: A Guide to the UV Index</a>
+</p>
