@@ -21,7 +21,7 @@ class _DailyDetailedWeatherViewState extends State<DailyDetailedWeatherView> {
     return  Scaffold(
       appBar: AppBar(title: Text('$title Hourly')),
       body: Container(
-        child: const Text('DAILY HOURLY DETAIL SCREEN'),
+        child: const Text('DAILY DETAIL SCREEN'),
       ),
     );
   }

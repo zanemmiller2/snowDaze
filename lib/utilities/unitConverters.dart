@@ -69,6 +69,15 @@ String dateTimeToHumanReadable(DateTime time) =>
 
 /// DateTime() => 'Mon, Jan 1 12:01 AM'
 
+double convertMetersToMiles(num meters) => meters * 0.000621371;
+
+double converthPaToInHg (num hpa) => hpa * 0.02953;
+
+double convertMmToIn(qpf) {
+  /// converts a double mm measurement to double inches
+  return (qpf / 25.4).ceil().toDouble();
+}
+
 void main() {
   DateTime DateTimeTime = DateTime.now();
   String UTCTime = '2022-12-24T12:54:51Z';

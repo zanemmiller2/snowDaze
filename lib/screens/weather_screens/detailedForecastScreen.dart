@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:snow_daze/screens/weather_screens/detailedAlertScreen.dart';
-import 'package:snow_daze/utilities/timeConversions.dart';
+import 'package:snow_daze/utilities/unitConverters.dart';
 
 // Project imports:
 import '../../interactions/OpenWeatherClass.dart';
@@ -101,6 +101,7 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
 
   @override
   Widget build(BuildContext context) {
+    /// Main Widget Driver
     if (!_gotData) {
       return const ProgressWithIcon();
     }
@@ -166,6 +167,7 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
                       title: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          horizontalDivider(),
                           // Title
                           Flexible(
                               fit: FlexFit.loose,
@@ -223,6 +225,7 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
             alignment: Alignment.centerLeft,
             child: const Text('Current Weather Summary'),
           ),
+          horizontalDivider(),
           Row(
             children: [
               // current temp
@@ -298,6 +301,7 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
             alignment: Alignment.centerLeft,
             child: const Text('24 Hour Forecast'),
           ),
+          horizontalDivider(),
           SizedBox(
             height: 100.0,
             child: ListView.separated(
@@ -393,27 +397,15 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
             alignment: Alignment.centerLeft,
             child: const Text('8 Day Forecast'),
           ),
-          const Divider(
-            height: 10,
-            thickness: 1,
-            indent: 10,
-            endIndent: 10,
-              color: Colors.grey,
-            ),
-            ListView.separated(
-                shrinkWrap: true,
-                physics: const ScrollPhysics(),
-                itemCount: detailedLocationForecastData.daily.length,
-                itemBuilder: (context, index) =>
-                    _buildListViewDailyWidget(
-                        context, index, latitude, longitude),
-              separatorBuilder: (BuildContext context, int index) => const Divider(
-                height: 10,
-                thickness: 1,
-                indent: 10,
-                endIndent: 10,
-                color: Colors.grey,
-              ),),
+          horizontalDivider(),
+          ListView.separated(
+              shrinkWrap: true,
+              physics: const ScrollPhysics(),
+              itemCount: detailedLocationForecastData.daily.length,
+              itemBuilder: (context, index) =>
+                  _buildListViewDailyWidget(
+                      context, index, latitude, longitude),
+              separatorBuilder: (BuildContext context, int index) => horizontalDivider())
           ],
         ),
     );
@@ -516,30 +508,32 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
     // Icon list for each grid (temperature, dew point, windchill, visibility,
     // air pressure, uv index, sunrise/sunset, humidity, wind direction,
     // and precipitation)
-    List<Widget> detailGridItems = [
-      const Icon(Icons.thermostat, size: 100.0, color: Colors.blue),
+    List<Map<String, dynamic>> detailGridItems = [
       // Temperature icon
-      const Icon(Icons.thermostat, size: 100.0, color: Colors.blue),
+      {'title': 'temp', 'icon': Image.asset('assets/images/thermometer_icon.png')},
       // Dew point icon
-      const Icon(Icons.thermostat, size: 100.0, color: Colors.blue),
+      {'title': 'dew_point', 'icon': Image.asset('assets/images/dewPoint_icon.png')},
       // Wind chill icon
-      const Icon(Icons.visibility, size: 100.0, color: Colors.blue),
-      // Visibility icon    TODO find visibility icon
-      const Icon(Icons.thermostat, size: 100.0, color: Colors.blue),
-      // Air Pressure icon  TODO find air pressure icon
-      const Icon(Icons.thermostat, size: 100.0, color: Colors.blue),
-      // UV Index           TODO find UV index icon
-      const Icon(Icons.thermostat, size: 100.0, color: Colors.blue),
-      // Sunrise/Sunset     TODO find sunrise/sunset icon
-      Image.asset('assets/images/humidity_icon.png'),
+      {'title': 'feels_like', 'icon': Image.asset('assets/images/windchill_icon.png')},
+      // Visibility icon
+      {'title': 'visibility', 'icon': Image.asset('assets/images/visibility_icon.png')},
+      // Air Pressure icon
+      {'title': 'pressure', 'icon': getGridAirPressureIcon()},
+      // UV Index
+      {'title': 'uvi', 'icon': Image.asset('assets/images/uvindex_icon.png')},
+      // Sunrise/Sunset
+      {'title': 'sun_rise', 'icon': getGridSunRiseSunSetIcon()},
       // Humidity icon
-      Transform.rotate(
-          // Wind direction icon:
-          // rotated to reflect actual wind direction in degrees true north
-          angle: detailedLocationForecastDataCurrent['wind_deg'] * (pi / 180),
-          child: const Icon(Icons.north, size: 100.0, color: Colors.blue)),
-      getPrecipitationIcon()
+      {'title': 'humidity', 'icon': Image.asset('assets/images/humidity_icon.png')},
+      // Wind direction icon:
+      {
+        'title': 'wind', 'icon': Transform.rotate(
+            // rotated to reflect actual wind direction in degrees true north
+            angle: detailedLocationForecastDataCurrent['wind_deg'] * (pi / 180),
+            child: const Icon(Icons.north, size: 100.0, color: Colors.blue))
+      },
       // Precipitation icon based on current precipitation conditions
+      {'title': 'pop', 'icon': getGridPrecipitationIcon()}
     ];
 
     return GridView.builder(
@@ -555,19 +549,19 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
                 child: Align(
                   alignment: Alignment.center,
                   child:
-                      detailGridItems[index],
+                      detailGridItems[index]['icon'],
                 ),
                 onTap: () async {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const GridDetailView()));
+                          builder: (context) => GridDetailView(title: detailGridItems[index]['title'], detailedLocationForecastData: detailedLocationForecastData,)));
                 }),
           );
         });
   }
 
-  Widget getPrecipitationIcon() {
+  Widget getGridPrecipitationIcon() {
     /// Gets the precipitation icon for the detail grid widget based on forecasted precipitation behavior
     // TODO -- add more logic control statements to account for different precipitation possibilities
 
@@ -588,6 +582,31 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
     }
   }
 
+  Widget getGridSunRiseSunSetIcon() {
+    /// sets the sunrise/sunset icon based on current time of day in relation to sunrise/sunset time
+    if(detailedLocationForecastDataCurrent['dt'] > detailedLocationForecastDataCurrent['sunrise'] && detailedLocationForecastDataCurrent['dt'] < detailedLocationForecastDataCurrent['sunset']) {
+      return Image.asset('assets/images/sunset_icon.png');
+    } else {
+      return Image.asset('assets/images/sunrise_icon.png');
+    }
+  }
+
+  Widget getGridAirPressureIcon() {
+    /// sets the air pressure icon based on future airpressure relative to current air pressure (rising or falling)
+    int currentAirPressure = detailedLocationForecastDataCurrent['pressure'];
+    for(var hour in detailedLocationForecastData.hourly) {
+      // Air pressure rising over the next hours
+      if(hour['pressure'] > currentAirPressure) {
+        return Image.asset('assets/images/airpressure_up_icon.png');
+      // Air pressure falling over the next hours
+      } else if(hour['pressure'] < currentAirPressure) {
+        return Image.asset('assets/images/airpressure_down_icon.png');
+      }
+    }
+    // air pressure consisitent over the next
+    return Image.asset('assets/images/airpressure_up_icon.png');
+  }
+
   /*------------------------------------
   *           FORMAT WIDGETS
   * ----------------------------------*/
@@ -601,12 +620,21 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
             alignment: Alignment.center,
             child: widget));
   }
+
+  Widget horizontalDivider() {
+    /// returns a formatted Divider() widget
+    return const Divider(
+      height: 10,
+      thickness: 1,
+      indent: 10,
+      endIndent: 10,
+      color: Colors.grey,
+    );
+  }
+
 } // class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView>
 
-double convertMmToIn(qpf) {
-  /// converts a double mm measurement to double inches
-  return (qpf / 25.4).ceil().toDouble();
-}
+
 
 List<String> getDailyPrecipitation(detailedLocationForecastData, index) {
   /// gets daily precipitation totals in mm and returns total in inches
