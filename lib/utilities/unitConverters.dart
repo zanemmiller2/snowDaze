@@ -1,6 +1,7 @@
 // Converts UTC time to local 12hr time format "MMMd h:mm a)
-import 'dart:convert';
+import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lat_lng_to_timezone/lat_lng_to_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -76,6 +77,94 @@ double converthPaToInHg (num hpa) => hpa * 0.02953;
 double convertMmToIn(qpf) {
   /// converts a double mm measurement to double inches
   return (qpf / 25.4).ceil().toDouble();
+}
+
+double convertMphToKnots(num windSpeed) => windSpeed * 0.868976;
+
+Color uvColor(uvi) {
+  /// returns the uv level color
+  if (uvi <= 2) {
+    return Colors.green;
+  } else if (2 < uvi && uvi <= 5) {
+    return Colors.yellow;
+  } else if (5 < uvi && uvi <= 7) {
+    return Colors.orange;
+  } else if (7 < uvi && uvi <= 10) {
+    return Colors.red;
+  } else {
+    return Colors.purple;
+  }
+}
+
+String uvLevel(uvi) {
+  /// Converts uv index into uv level
+  if (uvi <= 2) {
+    return 'Low';
+  } else if (2 < uvi && uvi <= 5) {
+    return 'Moderate';
+  } else if (5 < uvi && uvi <= 7) {
+    return 'High';
+  } else if (7 < uvi && uvi <= 10) {
+    return 'Very High';
+  } else {
+    return 'Extreme';
+  }
+}
+
+String getWindDirectionFromDeg(windDeg) {
+  if((windDeg >= 0 && windDeg <= 11.25) || (windDeg <= 360 && windDeg > 348.75)) {
+    return 'N';
+  } else if(windDeg > 11.25 && windDeg <= 33.75) {
+    return 'NNE';
+  } else if(windDeg > 33.75 && windDeg <= 56.25) {
+    return 'NE';
+  } else if(windDeg > 56.25 && windDeg <= 78.75) {
+    return 'ENE';
+  } else if(windDeg > 78.75 && windDeg <= 101.25) {
+    return 'E';
+  } else if(windDeg > 101.25 && windDeg <= 123.75) {
+    return 'ESE';
+  } else if(windDeg > 123.75 && windDeg <= 146.25) {
+    return 'SE';
+  } else if(windDeg > 146.25 && windDeg <= 168.75) {
+    return 'SSE';
+  } else if(windDeg > 168.75 && windDeg <= 191.25) {
+    return 'S';
+  } else if(windDeg > 191.25 && windDeg <= 213.75) {
+    return 'SSW';
+  } else if(windDeg > 213.75 && windDeg <= 236.25) {
+    return 'SW';
+  } else if(windDeg > 236.25 && windDeg <= 258.75) {
+    return 'WSW';
+  } else if(windDeg > 258.75 && windDeg <= 281.25) {
+    return 'W';
+  } else if(windDeg > 281.25 && windDeg <= 303.75) {
+    return 'WNW';
+  } else if(windDeg > 303.75 && windDeg <= 326.25) {
+    return 'NW';
+  } else {
+    return 'NNW';
+  }
+}
+
+String getMoonPhaseFromPercent(moonPhase) {
+  if(moonPhase == 1 || moonPhase == 0) {
+    return 'New Moon';
+  } else if(moonPhase > 0 && moonPhase < 0.25) {
+    return 'Waxing Crescent Moon';
+  } else if(moonPhase == 0.25) {
+    return 'First Quarter Moon';
+  } else if(moonPhase > 0.25 && moonPhase < 0.5) {
+    return 'Waxing Gibbous Moon';
+  }else if(moonPhase == 0.5) {
+    return 'Full Moon';
+  } else if(moonPhase > 0.5 && moonPhase < 0.75) {
+    return 'Waning Gibbous Moon';
+  } else if(moonPhase == 0.75) {
+    return 'Last Quarter Moon';
+  }  else{
+    return 'Waning Crescent Moon';
+  }
 }
 
 void main() {

@@ -142,7 +142,7 @@ class _AllLocationsState extends State<AllLocations> {
                     DetailedAllWeatherView(
                       latitude: allResortsList[index]['latitude'],
                       longitude: allResortsList[index]['longitude'],
-                      title: allResortsList[index]['resortName'],
+                      resortName: allResortsList[index]['resortName'],
                     )),
           );
         }

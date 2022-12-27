@@ -6,14 +6,17 @@ import 'package:snow_daze/utilities/unitConverters.dart';
 import '../../models/weather/currentWeather.dart';
 
 class GridDetailView extends StatelessWidget {
-  final String title;
+  final String category;
+  final String resortName;
+  final String actualTitle;
   final CurrentWeather detailedLocationForecastData;
 
   const GridDetailView(
       {super.key,
-      required this.title,
-      required this.detailedLocationForecastData});
-
+      required this.category,
+      required this.detailedLocationForecastData,
+      required this.resortName,
+      required this.actualTitle});
   @override
   Widget build(BuildContext context) {
     return hourlyDetailList();
@@ -21,11 +24,11 @@ class GridDetailView extends StatelessWidget {
 
   Widget hourlyDetailList() {
     // Sunrise doesn't use list view
-    if (title == 'sun_rise') {
+    if (category == 'sun_rise') {
       return Scaffold(
           appBar: AppBar(
-            title: const Text("Today"
-                "'s Sunrise and Sunset"),
+            title: Text("Today"
+                "'s $actualTitle at $resortName"),
           ),
           body: Center(
               child: SingleChildScrollView(
@@ -61,7 +64,7 @@ class GridDetailView extends StatelessWidget {
     } else {
       return Scaffold(
           appBar: AppBar(
-            title: Text('Hourly $title'),
+            title: Text('Hourly $actualTitle at $resortName'),
           ),
           body: Center(
               child: SingleChildScrollView(
@@ -70,7 +73,7 @@ class GridDetailView extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.only(left: 10.0),
                         alignment: Alignment.centerLeft,
-                        child: Text('$title'),
+                        child: Text(actualTitle),
                       ),
                       ListView.separated(
                         shrinkWrap: true,
@@ -104,9 +107,9 @@ class GridDetailView extends StatelessWidget {
     /// builds the daily simple widget rows
 
     // temperature widgets
-    if (title == 'temp' || title == 'feels_like' || title == 'dew_point') {
+    if (category == 'temp' || category == 'feels_like' || category == 'dew_point') {
       temp =
-          '${(detailedLocationForecastData.hourly[index]['$title'] / 1).ceil().toString()}\u{00B0}';
+          '${(detailedLocationForecastData.hourly[index]['$category'] / 1).ceil().toString()}\u{00B0}';
       return ListTile(
           title: Row(
         mainAxisSize: MainAxisSize.max,
@@ -127,9 +130,9 @@ class GridDetailView extends StatelessWidget {
           ),
         ],
       ));
-    } else if (title == 'visibility') {
+    } else if (category == 'visibility') {
       num distance = convertMetersToMiles(
-          detailedLocationForecastData.hourly[index]['$title']);
+          detailedLocationForecastData.hourly[index]['$category']);
       if (distance < .10) {
         distance = distance * 5280;
         visibilityDistance = '${distance.toStringAsFixed(2)} feet';
@@ -157,7 +160,7 @@ class GridDetailView extends StatelessWidget {
           ),
         ],
       ));
-    } else if (title == 'wind') {
+    } else if (category == 'wind') {
       String windSpeed =
           '${detailedLocationForecastData.hourly[index]['wind_speed']} mph';
       String windGust =
@@ -194,9 +197,9 @@ class GridDetailView extends StatelessWidget {
               child: const Icon(Icons.north, size: 100.0, color: Colors.blue))
         ],
       ));
-    } else if (title == 'pressure') {
+    } else if (category == 'pressure') {
       String pressure =
-          '${converthPaToInHg(detailedLocationForecastData.hourly[index]['$title']).toStringAsFixed(1)} inHg';
+          '${converthPaToInHg(detailedLocationForecastData.hourly[index]['$category']).toStringAsFixed(1)} inHg';
 
       return ListTile(
           title: Row(
@@ -218,8 +221,8 @@ class GridDetailView extends StatelessWidget {
           ),
         ],
       ));
-    } else if (title == 'uvi') {
-      num uviNum = detailedLocationForecastData.hourly[index]['$title'];
+    } else if (category == 'uvi') {
+      num uviNum = detailedLocationForecastData.hourly[index]['$category'];
 
       return ListTile(
           tileColor: uvColor(uviNum),
@@ -242,7 +245,7 @@ class GridDetailView extends StatelessWidget {
               ),
             ],
           ));
-    } else if (title == 'humidity') {
+    } else if (category == 'humidity') {
       return ListTile(
           title: Row(
         mainAxisSize: MainAxisSize.max,
@@ -263,7 +266,7 @@ class GridDetailView extends StatelessWidget {
           ),
         ],
       ));
-    } else if (title == 'pop') {
+    } else if (category == 'pop') {
       return ListTile(
           title: Row(
         mainAxisSize: MainAxisSize.max,
@@ -288,33 +291,5 @@ class GridDetailView extends StatelessWidget {
     return const SizedBox.shrink();
   }
 
-  Color uvColor(uvi) {
-    /// returns the uv level color
-    if (uvi <= 2) {
-      return Colors.green;
-    } else if (2 < uvi && uvi <= 5) {
-      return Colors.yellow;
-    } else if (5 < uvi && uvi <= 7) {
-      return Colors.orange;
-    } else if (7 < uvi && uvi <= 10) {
-      return Colors.red;
-    } else {
-      return Colors.purple;
-    }
-  }
 
-  String uvLevel(uvi) {
-    /// Converts uv index into uv level
-    if (uvi <= 2) {
-      return 'Low';
-    } else if (2 < uvi && uvi <= 5) {
-      return 'Moderate';
-    } else if (5 < uvi && uvi <= 7) {
-      return 'High';
-    } else if (7 < uvi && uvi <= 10) {
-      return 'Very High';
-    } else {
-      return 'Extreme';
-    }
-  }
 }
