@@ -1,7 +1,7 @@
 
 
 
-import '../interactions/nwsWeatherClass.dart';
+import '../models/weather/nwsWeatherClass.dart';
 
 import 'dart:async';
 

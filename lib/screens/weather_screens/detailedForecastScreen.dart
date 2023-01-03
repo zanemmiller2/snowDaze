@@ -16,22 +16,22 @@ import 'detailedCurrentWeatherScreen.dart';
 import 'detailedDailyForecastScreen.dart';
 import 'gridViewDetailHourlyScreen.dart';
 
-class DetailedAllWeatherView extends StatefulWidget {
+class DetailedForecastScreen extends StatefulWidget {
   final String latitude;
   final String longitude;
   final String resortName;
 
-  const DetailedAllWeatherView(
+  const DetailedForecastScreen(
       {super.key,
       required this.latitude,
       required this.longitude,
       required this.resortName});
 
   @override
-  State<DetailedAllWeatherView> createState() => _DetailedAllWeatherViewState();
+  State<DetailedForecastScreen> createState() => _DetailedForecastScreenState();
 }
 
-class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
+class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
   DocumentSnapshot? detailedLocationForecastSnapshot;
   late CurrentWeather detailedLocationForecastData;
   bool _gotData = false;
@@ -67,6 +67,7 @@ class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView> {
   }
 
   Future<void> fetchLocationData() async {
+    //TODO CONVERT TO USING WORLD WEATHER ONLINE
     /// fetchLocationData fetches current detailed weather data from API or DB
 
     OpenWeather openWeatherClass =

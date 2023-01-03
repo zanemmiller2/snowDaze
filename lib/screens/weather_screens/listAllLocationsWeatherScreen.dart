@@ -107,7 +107,6 @@ class _AllLocationsState extends State<AllLocations> {
               decoration: const BoxDecoration(
                 color: Color(0xffddddff),
               ),
-              padding: const EdgeInsets.all(10.0),
               child: Image.network(
                 'https://openweathermap.org/img/w/${currentWeather[index]["icon"]}.png',
                 loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
@@ -139,7 +138,7 @@ class _AllLocationsState extends State<AllLocations> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    DetailedAllWeatherView(
+                    DetailedForecastScreen(
                       latitude: allResortsList[index]['latitude'],
                       longitude: allResortsList[index]['longitude'],
                       resortName: allResortsList[index]['resortName'],

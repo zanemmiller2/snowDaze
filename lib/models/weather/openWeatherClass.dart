@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 // Project imports:
 import 'package:snow_daze/auth/secrets.dart';
 
-import '../models/weather/currentWeather.dart';
+import 'currentWeather.dart';
 
 class OpenWeather {
   String latitude;
