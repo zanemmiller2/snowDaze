@@ -29,22 +29,30 @@ Future<double> nwsLocationDailySnowfall (DateTime startTime, String latitude, St
     // add to current days total
     if(nwsWeatherForecast.startTimes[i].day < nextDayStart) {
       // day includes snow
-      if(nwsWeatherForecast.weatherConditionsType[i].contains('snow')) {
-        dailyDetails[currentDayIndex][currentDayKey]['snow'] += nwsWeatherForecast.hourlyQpf[i];
-      } else if(nwsWeatherForecast.weatherConditionsType[i].contains('rain')) {
-        dailyDetails[currentDayIndex][currentDayKey]['rain'] += nwsWeatherForecast.hourlyQpf[i];
+      if (nwsWeatherForecast.weatherConditionsType[i].contains('snow') ||
+          nwsWeatherForecast.weatherConditionsType[i].contains('Snow')) {
+        dailyDetails[currentDayIndex][currentDayKey]['snow'] +=
+            nwsWeatherForecast.hourlyQpf[i];
+      } else if (nwsWeatherForecast.weatherConditionsType[i].contains('rain')) {
+        dailyDetails[currentDayIndex][currentDayKey]['rain'] +=
+            nwsWeatherForecast.hourlyQpf[i];
       }
       // Start a new day
     } else {
       currentDayKey = nwsWeatherForecast.startTimes[i];
       nextDayStart = nwsWeatherForecast.startTimes[i].day + 1;
       currentDayIndex++;
-      dailyDetails.add({nwsWeatherForecast.startTimes[i] : {'snow': 0.0, 'rain': 0.0}});
+      dailyDetails.add({
+        nwsWeatherForecast.startTimes[i]: {'snow': 0.0, 'rain': 0.0}
+      });
 
-      if(nwsWeatherForecast.weatherConditionsType[i].contains('snow')) {
-        dailyDetails[currentDayIndex][currentDayKey]['snow'] += nwsWeatherForecast.hourlyQpf[i];
-      } else if(nwsWeatherForecast.weatherConditionsType[i].contains('rain')) {
-        dailyDetails[currentDayIndex][currentDayKey]['rain'] += nwsWeatherForecast.hourlyQpf[i];
+      if (nwsWeatherForecast.weatherConditionsType[i].contains('snow') ||
+          nwsWeatherForecast.weatherConditionsType[i].contains('Snow')) {
+        dailyDetails[currentDayIndex][currentDayKey]['snow'] +=
+            nwsWeatherForecast.hourlyQpf[i];
+      } else if (nwsWeatherForecast.weatherConditionsType[i].contains('rain')) {
+        dailyDetails[currentDayIndex][currentDayKey]['rain'] +=
+            nwsWeatherForecast.hourlyQpf[i];
       }
     }
   }
