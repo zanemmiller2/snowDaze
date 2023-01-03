@@ -1,6 +1,4 @@
 
-
-
 import '../models/weather/nwsWeatherClass.dart';
 
 import 'dart:async';
