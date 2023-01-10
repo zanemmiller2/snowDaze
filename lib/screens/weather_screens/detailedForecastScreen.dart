@@ -1,38 +1,51 @@
 // Flutter imports:
 // Package imports:
+import 'dart:convert';
+import 'dart:core';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:snow_daze/interactions/worldWeatherOnlineAPI.dart';
 import 'package:snow_daze/screens/weather_screens/detailedAlertScreen.dart';
 import 'package:snow_daze/utilities/unitConverters.dart';
+import 'package:twitter_api_v2/twitter_api_v2.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
-import '../../interactions/OpenWeatherClass.dart';
+import '../../auth/secrets.dart';
 import '../../models/weather/currentWeather.dart';
-import '../../utilities/locationDailySnowfall.dart';
+import '../../interactions/openWeatherClass.dart';
+import '../../models/weather/currentWeatherWWO.dart';
 import '../../widgets/snowFlakeProgressIndicator.dart';
 import 'detailedCurrentWeatherScreen.dart';
 import 'detailedDailyForecastScreen.dart';
 import 'gridViewDetailHourlyScreen.dart';
+import 'package:twitter_api_v2/twitter_api_v2.dart';
+import 'package:tweet_ui/tweet_ui.dart';
 
 class DetailedForecastScreen extends StatefulWidget {
   final String latitude;
   final String longitude;
   final String resortName;
+  final String twitterStreamHTML;
 
   const DetailedForecastScreen(
       {super.key,
-      required this.latitude,
-      required this.longitude,
-      required this.resortName});
+        required this.twitterStreamHTML,
+        required this.latitude,
+        required this.longitude,
+        required this.resortName}
+      );
 
   @override
   State<DetailedForecastScreen> createState() => _DetailedForecastScreenState();
 }
 
 class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
+  late final WebViewController controller;
   DocumentSnapshot? detailedLocationForecastSnapshot;
+  late ForecastWeatherWWO detailedLocationForecastDataWWO;
   late CurrentWeather detailedLocationForecastData;
   bool _gotData = false;
   static const daysOfWeekAbr = [
@@ -46,6 +59,8 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
     'Sun'
   ];
 
+  late TwitterApi _twitter;
+
   get resortName => widget.resortName;
 
   get latitude => widget.latitude;
@@ -58,6 +73,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
   @override
   void initState() {
     super.initState();
+
     // get the location data for the specified location
     fetchLocationData().whenComplete(() {
       setState(() {
@@ -68,8 +84,34 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
 
   Future<void> fetchLocationData() async {
     //TODO CONVERT TO USING WORLD WEATHER ONLINE
-    /// fetchLocationData fetches current detailed weather data from API or DB
 
+    WorldWeatherClass worldWeatherClass = WorldWeatherClass(latitude: latitude, longitude: longitude, resortName: resortName);
+    // If the data exists in the db and its been updated less than an hour ago use the data from the db
+    bool exists = await worldWeatherClass.checkIfDocExistsForLocation();
+    if (exists) {
+      ForecastWeatherWWO detailedWeatherForecastFromDBWWO = await worldWeatherClass.fetchCurrentWeatherForecastFromFirestore();
+      // data in db was updated less than an hour ago
+      if (detailedWeatherForecastFromDBWWO.lastUpdated >
+          DateTime.now().millisecondsSinceEpoch ~/ 1000 - 360) {
+        detailedLocationForecastDataWWO = detailedWeatherForecastFromDBWWO;
+        print('USING DATA FROM DB WWO');
+        // data was updated more than an hour ago ... use data from API call
+      } else {
+        detailedLocationForecastDataWWO =
+        await worldWeatherClass.fetchCurrentWeatherForecast(
+            await worldWeatherClass.getCurrentWeatherAPIUrl());
+        print('USING DATA FROM API WWO');
+      }
+
+      // Data doesn't currently exist in the database ... use the data from the API Call
+    } else {
+      detailedLocationForecastDataWWO =
+      await worldWeatherClass.fetchCurrentWeatherForecast(
+          await worldWeatherClass.getCurrentWeatherAPIUrl());
+      print('USING DATA FROM API WWO');
+    }
+
+    /// fetchLocationData fetches current detailed weather data from API or DB
     OpenWeather openWeatherClass =
         OpenWeather(latitude: latitude, longitude: longitude);
 
@@ -103,6 +145,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     /// Main Widget Driver
     if (!_gotData) {
       return const ProgressWithIcon();
@@ -125,24 +168,69 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [currentWeatherSummaryWidget(context)],
                   )),
-              // 24 hour forecast horizontal scroll widget
-              hourlyWeatherWidget(context),
+              // // 24 hour forecast horizontal scroll widget
+              // hourlyWeatherWidget(context),
               // Daily summary vertical scroll List
               dailyWeatherWidgets(context),
-              // Hourly detailed grids
-              formattingWidget(Column(
-                children: [
-                  Container(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      alignment: Alignment.centerLeft,
-                      child: const Text('24 Hour Individual Detail')),
-                  horizontalDivider(),
-                  currentWeatherGridWidget(context)
-                ],
-              )),
-            ],
-          ),
-        ));
+              // // Hourly detailed grids
+              // formattingWidget(
+              //     Column(
+              //       children: [
+              //         Container(
+              //             padding: const EdgeInsets.only(left: 10.0),
+              //             alignment: Alignment.centerLeft,
+              //             child: const Text('24 Hour Individual Detail')
+              //         ),
+              //         horizontalDivider(),
+              //         currentWeatherGridWidget(context)
+              //       ],
+              //     )
+              // ),
+            FutureBuilder(
+                future: _twitter.users.lookupByName(username: 'northstarmtn'),
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final UserData me = snapshot.data.data;
+
+                  return FutureBuilder(
+                      future: _twitter.tweets.lookupTweets(
+                        userId: me.id,
+                        expansions: [
+                          TweetExpansion.authorId,
+                        ],
+                        userFields: [
+                          UserField.profileImageUrl,
+                        ],
+                      ),
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+
+                        final TwitterResponse<List<TweetData>, TweetMeta> response = snapshot.data;
+                        print(response.data.length);
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                            itemCount: response.data.length,
+                            itemBuilder: (context, index){
+                              return EmbeddedTweetView.fromTweetV2(
+                                TweetV2Response.fromJson(response.data[index].toJson()),
+                              );
+                            }
+                        );
+
+
+
+                      }
+                  );
+                }),
+    ])
+                  )
+                  );
   }
 
   /*------------------------------------
@@ -154,7 +242,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
     /// Returns an empty widget if there are no alerts.
 
     // if there are alerts, return the alert widget list
-    if (detailedLocationForecastData.alerts.isNotEmpty) {
+    if (detailedLocationForecastDataWWO.alerts.isNotEmpty) {
       return formattingWidget(
         Column(
           children: [
@@ -164,18 +252,18 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                 child: const Text('Weather Alerts')),
             ListView.builder(
               shrinkWrap: true,
-              itemCount: detailedLocationForecastData.alerts.length,
+              itemCount: detailedLocationForecastDataWWO.alerts.length,
               itemBuilder: (context, index) {
                 var effectEndTime = dateTimeToHumanReadable(
                     convertToLocationLocalTime(
-                        detailedLocationForecastData.lat,
-                        detailedLocationForecastData.lon,
-                        detailedLocationForecastData.alerts[index]['end']));
+                        detailedLocationForecastDataWWO.latitude,
+                        detailedLocationForecastDataWWO.longitude,
+                        detailedLocationForecastDataWWO.alerts[index]['end']));
                 var effectStartTime = dateTimeToHumanReadable(
                     convertToLocationLocalTime(
-                        detailedLocationForecastData.lat,
-                        detailedLocationForecastData.lon,
-                        detailedLocationForecastData.alerts[index]['start']));
+                        detailedLocationForecastDataWWO.latitude,
+                        detailedLocationForecastDataWWO.longitude,
+                        detailedLocationForecastDataWWO.alerts[index]['end']));
                 return ListTile(
                     title: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -185,7 +273,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                         Flexible(
                             fit: FlexFit.loose,
                             child: Text(
-                              '${detailedLocationForecastData.alerts[index]['event']}',
+                              '${detailedLocationForecastDataWWO.alerts[index]['event']}',
                               style: Theme.of(context).textTheme.headlineSmall,
                             )),
                         // In effect until ...
@@ -201,7 +289,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                         Flexible(
                             fit: FlexFit.loose,
                             child: Text(
-                              '${detailedLocationForecastData.alerts[index]['sender_name']}',
+                              '${detailedLocationForecastDataWWO.alerts[index]['sender_name']}',
                               style: Theme.of(context).textTheme.bodySmall,
                             )),
                       ],
@@ -213,7 +301,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                           MaterialPageRoute(
                               builder: (context) => DetailedAlertScreen(
                                   detailedLocationForecastDataAlerts:
-                                      detailedLocationForecastData
+                                  detailedLocationForecastDataWWO
                                           .alerts[index],
                                   effectStartTime: effectStartTime,
                                   effectEndTime: effectEndTime)));
@@ -435,13 +523,13 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
           Container(
             padding: const EdgeInsets.only(left: 10.0),
             alignment: Alignment.centerLeft,
-            child: const Text('8 Day Forecast'),
+            child: const Text('6 Day Forecast'),
           ),
           horizontalDivider(),
           ListView.separated(
               shrinkWrap: true,
               physics: const ScrollPhysics(),
-              itemCount: detailedLocationForecastData.daily.length,
+              itemCount: detailedLocationForecastDataWWO.dailyWeather.length,
               itemBuilder: (context, index) => _buildListViewDailyWidget(
                   context, index, latitude, longitude),
               separatorBuilder: (BuildContext context, int index) =>
@@ -455,33 +543,19 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
       BuildContext context, index, latitude, longitude) {
     /// builds the daily simple widget rows
     List precipitation =
-        getDailyPrecipitation(detailedLocationForecastData, index);
+        getDailyPrecipitation(detailedLocationForecastDataWWO.dailyWeather, index);
     String weatherType = precipitation[0];
     String dailyQpf = precipitation[1];
 
-    List dailyTemps = getDailyTemperatures(detailedLocationForecastData, index);
-    String minTemp = '${(dailyTemps[0] / 1).ceil().toString()}\u{00B0}';
-    String maxTemp = '${(dailyTemps[1] / 1).ceil().toString()}\u{00B0}';
-
-    // use the larger of the two predictions between NWS and OpenWeather
-    var dayStartTime =
-        convertEpochToDateTime(detailedLocationForecastData.daily[index]['dt']);
-    nwsLocationDailySnowfall(dayStartTime, latitude, longitude).then((value) {
-      if (value > double.parse(dailyQpf)) {
-        print('USING NWS SNOWFALL PREDICTIONS');
-        dailyQpf = value.toString();
-      } else {
-        print('USING OPENWEATHER SNOWFALL PREDICTIONS');
-      }
-    });
+    List dailyTemps = getDailyTemperatures(detailedLocationForecastDataWWO.dailyWeather, index);
+    String avgMin = '${(dailyTemps[0] / 1).ceil().toString()}\u{00B0}';
+    String avgMax = '${(dailyTemps[1] / 1).ceil().toString()}\u{00B0}';
 
     String getDayOfWeek(index) {
       if (index == 0) {
         return 'Today';
       } else {
-        return daysOfWeekAbr[convertToLocationLocalTime(latitude, longitude,
-                detailedLocationForecastData.daily[index]['dt'])
-            .weekday];
+        return daysOfWeekAbr[convertYYYMMDDToDateTime(detailedLocationForecastDataWWO.dailyWeather[index]['date']).weekday];
       }
     }
 
@@ -500,7 +574,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
             // Precipitation probability
             Flexible(
               child: Text(
-                'Chance\n${(detailedLocationForecastData.daily[index]['pop'] * 100 / 1).ceil()}%',
+                'Chance of Snow\n${detailedLocationForecastDataWWO.dailyWeather[index]['chanceofsnow']}%',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
             ),
@@ -509,7 +583,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
               child: FittedBox(
                 fit: BoxFit.fitWidth,
                 child: Text(
-                  'Temperatures\nMin: $minTemp\n Max: $maxTemp',
+                  'Temperature\n Min: $avgMin \nMax: $avgMax',
                   style: Theme.of(context).textTheme.subtitle1,
                   textAlign: TextAlign.center,
                 ),
@@ -530,9 +604,9 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
               MaterialPageRoute(
                   builder: (context) => DailyDetailedWeatherView(
                         resortName:
-                            '$resortName ${daysOfWeekAbr[convertToLocationLocalTime(latitude, longitude, detailedLocationForecastData.daily[index]['dt']).weekday]}',
-                        dailyDetailedLocationForecastData:
-                            detailedLocationForecastData.daily[index],
+                            '$resortName ${daysOfWeekAbr[convertYYYMMDDToDateTime(detailedLocationForecastDataWWO.dailyWeather[index]['date']).weekday]}',
+                        dailyDetailedLocationForecastDataWWO:
+                        detailedLocationForecastDataWWO.dailyWeather[index],
                         index: index,
                       )));
         });
@@ -724,11 +798,11 @@ List<String> getDailyPrecipitation(detailedLocationForecastData, index) {
 
   // get the days rain total in mm and convert to inches
   String? precipitationRainQpf =
-      convertMmToIn(detailedLocationForecastData?.daily[index]['rain'] ?? 0.0)
+      convertMmToIn(double.parse(detailedLocationForecastData[index]['precipMM'] ?? '0.0'))
           .toString();
   // get the days rain total in mm and convert to inches
   String? precipitationSnowQpf =
-      convertMmToIn(detailedLocationForecastData?.daily[index]['snow'] ?? 0.0)
+      convertCmToIn(double.parse(detailedLocationForecastData[index]['totalSnowfall_cm'] ?? '0.0'))
           .toString();
 
   String? dailyQpf = '0.0';
@@ -736,9 +810,7 @@ List<String> getDailyPrecipitation(detailedLocationForecastData, index) {
   // snow and rain count as snow only in mountains
   if (double.parse(precipitationRainQpf) > 0.0 &&
       double.parse(precipitationSnowQpf) > 0.0) {
-    double tempSnow =
-        double.parse(precipitationSnowQpf) + double.parse(precipitationRainQpf);
-    dailyQpf = tempSnow.toString();
+    dailyQpf = precipitationSnowQpf.toString();
     weatherType = 'Snow';
   }
   // rain only
@@ -760,17 +832,19 @@ List<String> getDailyPrecipitation(detailedLocationForecastData, index) {
   return [weatherType, dailyQpf];
 }
 
-List<num> getDailyTemperatures(detailedLocationForecastData, index) =>
+List<num> getDailyTemperatures(detailedLocationForecastData, index) {
+  num baseMin = double.parse(detailedLocationForecastData[index]['bottom'][0]['mintempF']);
+  var baseMax = double.parse(detailedLocationForecastData[index]['bottom'][0]['maxtempF']);
+  var midMin = double.parse(detailedLocationForecastData[index]['mid'][0]['mintempF']);
+  var midMax = double.parse(detailedLocationForecastData[index]['mid'][0]['maxtempF']);
+  var topMin = double.parse(detailedLocationForecastData[index]['top'][0]['mintempF']);
+  var topMax = double.parse(detailedLocationForecastData[index]['top'][0]['maxtempF']);
 
-    /// get the daily min, max, morning, day, evening, and night temperatures and returns them as a list
-    [
-      detailedLocationForecastData.daily[index]['temp']['min'],
-      detailedLocationForecastData.daily[index]['temp']['max'],
-      detailedLocationForecastData.daily[index]['temp']['morn'],
-      detailedLocationForecastData.daily[index]['temp']['day'],
-      detailedLocationForecastData.daily[index]['temp']['eve'],
-      detailedLocationForecastData.daily[index]['temp']['night']
-    ];
+  num avgMin = (baseMin + midMin + topMin) / 3;
+  num avgMax = (baseMax + midMax + topMax) / 3;
+
+  return [avgMin, avgMax];
+}
 
 List<num> getDailyWindChillTemps(detailedLocationForecastData, index) =>
 

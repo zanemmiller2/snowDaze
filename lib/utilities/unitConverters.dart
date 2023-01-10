@@ -79,6 +79,14 @@ double convertMmToIn(qpf) {
   return (qpf / 25.4).ceil().toDouble();
 }
 
+double convertCmToIn(qpf) {
+  return (qpf / 2.54).ceil().toDouble();
+}
+
+DateTime convertYYYMMDDToDateTime(String date) {
+  return DateTime.parse(date);
+}
+
 double convertMphToKnots(num windSpeed) => windSpeed * 0.868976;
 
 Color uvColor(uvi) {
@@ -165,6 +173,10 @@ String getMoonPhaseFromPercent(moonPhase) {
   }  else{
     return 'Waning Crescent Moon';
   }
+}
+
+String convertMetersToFeet (String meters) {
+  return ((double.parse(meters) * 3.28084 / 100).ceil() * 100).toString();
 }
 
 void main() {

@@ -8,7 +8,7 @@ import 'package:snow_daze/utilities/unitConverters.dart';
 import 'package:xml/xml.dart';
 
 // Project imports:
-import '../../services/debugLogFunction.dart';
+import '../services/debugLogFunction.dart';
 
 class NWSWeatherForecast {
 

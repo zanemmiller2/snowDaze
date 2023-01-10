@@ -142,6 +142,7 @@ class _AllLocationsState extends State<AllLocations> {
                       latitude: allResortsList[index]['latitude'],
                       longitude: allResortsList[index]['longitude'],
                       resortName: allResortsList[index]['resortName'],
+                      twitterStreamHTML: allResortsList[index]['twitterStreamHTML']
                     )),
           );
         }
