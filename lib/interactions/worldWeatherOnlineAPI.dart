@@ -31,8 +31,10 @@ class WorldWeatherClass {
     int retryRequestCounter = 0;
     var response = await http.get(Uri.parse(currentWeatherURL));
     if (response.statusCode == 200) {
-      await loadToWeatherForecastsDb(response.body);
+      // Store the data in the database
       var tempAlerts = await getForecastAlerts();
+      await loadToWeatherForecastsDb(response.body, tempAlerts);
+      // return the map of the data
       return ForecastWeatherWWO.fromJson(jsonDecode(response.body), latitude, longitude, tempAlerts);
     }
 
@@ -70,14 +72,14 @@ class WorldWeatherClass {
     });
   }
 
-  Future<void> loadToWeatherForecastsDb(String jsonData) async {
+  Future<void> loadToWeatherForecastsDb(String jsonData, alerts) async {
     /// Loads the weather forecast into the Firestore collection weather_forecasts
     CollectionReference weatherForecasts = FirebaseFirestore.instance.collection('weather_forecasts');
     var weatherForecastMap = jsonDecode(jsonData);
     weatherForecastMap['latitude'] = latitude;
     weatherForecastMap['longitude'] = longitude;
     weatherForecastMap['lastUpdated'] = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    weatherForecastMap['alerts'] = await getForecastAlerts();
+    weatherForecastMap['alerts'] = alerts;
     await weatherForecasts
         .doc(resortName)
         .set(weatherForecastMap);
@@ -100,7 +102,8 @@ class WorldWeatherClass {
     detailedLocationForecastFromDb = await FirebaseFirestore.instance.collection('weather_forecasts')
         .doc(resortName)
         .get();
-    var tempAlerts = await getForecastAlerts();
+
+    var tempAlerts = await detailedLocationForecastFromDb['alerts'];
     return ForecastWeatherWWO.fromJson(detailedLocationForecastFromDb.data() as Map, latitude, longitude, tempAlerts);
   }
 
@@ -114,14 +117,14 @@ class WorldWeatherClass {
       if (detailedWeatherForecastFromDB.lastUpdated >
           DateTime.now().millisecondsSinceEpoch ~/ 1000 - 360) {
         detailedLocationForecastData = detailedWeatherForecastFromDB;
-        print('USING DATA FROM DB');
+        print('USING DATA FROM DB WWO ALERTS');
         // data was updated more than an hour ago ... use data from API call
       } else {
         detailedLocationForecastData =
         await openWeatherClass.fetchCurrentWeatherForecast(
             await openWeatherClass.getCurrentWeatherAPIUrl(
                 latitude: latitude, longitude: longitude));
-        print('USING DATA FROM API');
+        print('USING DATA FROM API WWO ALERTS');
       }
 
       // Data doesn't currently exist in the database ... use the data from the API Call

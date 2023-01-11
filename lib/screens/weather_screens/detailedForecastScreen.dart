@@ -146,8 +146,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
     WorldWeatherClass worldWeatherClass = WorldWeatherClass(
         latitude: latitude, longitude: longitude, resortName: resortName);
     // If the data exists in the db and its been updated less than an hour ago use the data from the db
-    bool exists = await worldWeatherClass.checkIfDocExistsForLocation();
-    if (exists) {
+    if (await worldWeatherClass.checkIfDocExistsForLocation()) {
       ForecastWeatherWWO detailedWeatherForecastFromDBWWO =
           await worldWeatherClass.fetchCurrentWeatherForecastFromFirestore();
       // data in db was updated less than an hour ago
