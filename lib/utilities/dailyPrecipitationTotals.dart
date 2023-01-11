@@ -9,11 +9,12 @@ List<String> getDailyPrecipitation(detailedLocationForecastData, index) {
       .toString();
   // get the days rain total in mm and convert to inches
   String? precipitationSnowQpf = convertCmToIn(double.parse(
-      detailedLocationForecastData[index]['totalSnowfall_cm'] ?? '0.0'))
+      detailedLocationForecastData[index]['totalSnowfall_cm'] ?? '0.0') * 0.65)
       .toString();
 
   String? dailyQpf = '0.0';
   String? weatherType;
+
   // snow and rain count as snow only in mountains
   if (double.parse(precipitationRainQpf) > 0.0 &&
       double.parse(precipitationSnowQpf) > 0.0) {

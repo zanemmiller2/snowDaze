@@ -93,7 +93,7 @@ double convertMmToIn(qpf) {
 
 double convertCmToIn(qpf) {
   /// converts Cm to In = (cm / 2.54) rounded up
-  return (qpf / 2.54).ceil().toDouble();
+  return (qpf / 2.54).floor().toDouble();
 }
 
 DateTime convertYYYMMDDToDateTime(String date) {

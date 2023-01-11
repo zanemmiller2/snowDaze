@@ -22,6 +22,7 @@ import '../../models/weather/currentWeather.dart';
 import '../../models/weather/currentWeatherWWO.dart';
 import '../../utilities/dailyPrecipitationTotals.dart';
 import '../../utilities/getDailyTemperatures.dart';
+import '../../utilities/getPrevious3DaysSnowFall.dart';
 import '../../widgets/snowFlakeProgressIndicator.dart';
 import 'detailedDailyForecastScreen.dart';
 
@@ -33,7 +34,7 @@ class DetailedForecastScreen extends StatefulWidget {
   final String resortState;
   final dynamic resortRoadConditions;
 
-  DetailedForecastScreen(
+  const DetailedForecastScreen(
       {
         super.key,
         required this.resortTwitterUserName,
@@ -415,6 +416,9 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
   *        CURRENT SUMMARY
   * ----------------------------------*/
   Widget currentWeatherSummaryWidget(BuildContext context) {
+
+    String previous3DaySnowFallIn = getPrevious3DaysSnowFall(previousWeatherWWO);
+
     /// builds the current weather top widget bar
     return InkWell(
       child: formattingWidget(
@@ -422,7 +426,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
           children: [
             Container(
               alignment: Alignment.centerLeft,
-              child: const Text('Current Weather Summary'),
+              child: Text('Weather Summary - ${dateTimeToHumanReadable(convertToLocationLocalTime(detailedLocationForecastData.lat, detailedLocationForecastData.lon, detailedLocationForecastDataCurrent['dt']))}'),
             ),
             horizontalDivider(),
             Column(
@@ -430,14 +434,6 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      // time
-                      Flexible(
-                        fit: FlexFit.loose,
-                        child: Text(
-                          dateTimeToHumanReadable(convertToLocationLocalTime(detailedLocationForecastData.lat, detailedLocationForecastData.lon, detailedLocationForecastDataCurrent['dt'])),
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ),
                       // current temp
                       Flexible(
                         fit: FlexFit.loose,
@@ -451,6 +447,14 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                         fit: FlexFit.loose,
                         child: Text(
                           'Feels Like: ${(detailedLocationForecastDataCurrent['feels_like'] / 1).floor()}\u{00B0}',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                      // Last 3 Days Snowfall
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Text(
+                          'Prev. 72hr Snowfall: $previous3DaySnowFallIn in',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
@@ -634,6 +638,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
 
   get resortState => widget.resortState;
   get resortRoadConditions => widget.resortRoadConditions;
+  get previousWeatherWWO => detailedLocationForecastDataWWO.previous3DaysWeather['data']['weather'];
 
   /*------------------------------------
   *           FORMAT WIDGETS
