@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:snow_daze/utilities/unitConverters.dart';
 
-import '../../models/weather/currentWeather.dart';
+import '../lib/models/weather/currentWeather.dart';
 
 class GridDetailView extends StatelessWidget {
   final String category;

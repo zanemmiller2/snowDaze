@@ -1,9 +1,12 @@
+// Dart imports:
 import 'dart:convert';
 
+// Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:snow_daze/auth/secrets.dart';
 import 'package:http/http.dart' as http;
 
+// Project imports:
+import 'package:snow_daze/auth/secrets.dart';
 import '../models/weather/currentWeather.dart';
 import '../models/weather/currentWeatherWWO.dart';
 import 'openWeatherClass.dart';
@@ -132,15 +135,4 @@ class WorldWeatherClass {
     return detailedLocationForecastData.alerts;
   }
 
-}
-
-void main() async {
-  String latitude = '39.2875';
-  String longitude = '-120.1047';
-  String startDate = '2022-12-30';
-  String endDate = '2023-01-02';
-  String resortName = 'Northstar';
-  WorldWeatherClass wwoHandler = WorldWeatherClass(latitude: latitude, longitude: longitude, resortName: resortName);
-  // getWorldWeatherOnlineWeatherData(worldWeatherOnlineForecastRequestURL(latitude, longitude));
-  print(wwoHandler.fetchCurrentWeatherForecast(await wwoHandler.getHistoricalWeatherAPIUrl(startDate, endDate)));
 }

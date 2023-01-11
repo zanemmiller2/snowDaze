@@ -1,7 +1,12 @@
 // Converts UTC time to local 12hr time format "MMMd h:mm a)
+
+// Dart imports:
 import 'dart:ui';
 
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:intl/intl.dart';
 import 'package:lat_lng_to_timezone/lat_lng_to_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;

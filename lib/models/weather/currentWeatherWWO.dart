@@ -1,4 +1,4 @@
-import '../../interactions/openWeatherClass.dart';
+// Project imports:
 import 'currentWeather.dart';
 
 class ForecastWeatherWWO {

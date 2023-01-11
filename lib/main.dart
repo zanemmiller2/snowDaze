@@ -1,4 +1,3 @@
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,8 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:snow_daze/screens/authentication_screens/authWrapper.dart';
 import 'package:snow_daze/services/authService.dart';
 import 'models/users/firebaseUser.dart';
-
-
 
 void main() async {
 

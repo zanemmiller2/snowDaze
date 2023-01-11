@@ -55,6 +55,7 @@ dependencies:
   webview_flutter: ^4.0.1
   twitter_api_v2: ^4.8.1
   tweet_ui: ^4.0.4
+  url_launcher: ^6.1.7
 
 dev_dependencies:
   flutter_test:

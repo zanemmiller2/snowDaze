@@ -2,12 +2,11 @@
 
 // Package imports:
 import 'package:http/http.dart' as http;
-
 import 'package:intl/intl.dart';
-import 'package:snow_daze/utilities/unitConverters.dart';
 import 'package:xml/xml.dart';
 
 // Project imports:
+import 'package:snow_daze/utilities/unitConverters.dart';
 import '../services/debugLogFunction.dart';
 
 class NWSWeatherForecast {

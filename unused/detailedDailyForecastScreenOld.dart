@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../utilities/unitConverters.dart';
+import '../lib/utilities/unitConverters.dart';
 
 class DailyDetailedWeatherView extends StatelessWidget {
 

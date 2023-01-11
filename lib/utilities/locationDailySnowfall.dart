@@ -1,12 +1,11 @@
-
-import '../interactions/nwsWeatherClass.dart';
-
+// Dart imports:
 import 'dart:async';
+
+// Project imports:
+import '../interactions/nwsWeatherClass.dart';
 
 Future<double> nwsLocationDailySnowfall (DateTime startTime, String latitude, String longitude) async {
   /// calculates the daily snowfall for the specified day
-
-  DateTime currentTime = DateTime.now();
 
   // get map of hourly data from nws
   NWSWeatherForecast nwsWeatherForecast = NWSWeatherForecast(latitude, longitude);
