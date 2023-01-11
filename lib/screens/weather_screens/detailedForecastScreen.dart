@@ -1,4 +1,3 @@
-// Flutter imports:
 
 // Dart imports:
 import 'dart:convert';
@@ -21,6 +20,8 @@ import 'package:snow_daze/utilities/unitConverters.dart';
 import '../../interactions/openWeatherClass.dart';
 import '../../models/weather/currentWeather.dart';
 import '../../models/weather/currentWeatherWWO.dart';
+import '../../utilities/dailyPrecipitationTotals.dart';
+import '../../utilities/getDailyTemperatures.dart';
 import '../../widgets/snowFlakeProgressIndicator.dart';
 import 'detailedDailyForecastScreen.dart';
 
@@ -30,7 +31,7 @@ class DetailedForecastScreen extends StatefulWidget {
   final String resortName;
   final String resortTwitterUserName;
   final String resortState;
-  var resortRoadConditions;
+  final dynamic resortRoadConditions;
 
   DetailedForecastScreen(
       {
@@ -107,6 +108,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
             child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // TRAFFIC
                   trafficConditionsWidget(),
                   // ALERTS
                   Flexible(
@@ -662,63 +664,3 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
   }
 } // class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView>
 
-
-
-List<String> getDailyPrecipitation(detailedLocationForecastData, index) {
-  /// gets daily precipitation totals in mm and returns total in inches
-
-  // get the days rain total in mm and convert to inches
-  String? precipitationRainQpf = convertMmToIn(double.parse(
-          detailedLocationForecastData[index]['precipMM'] ?? '0.0'))
-      .toString();
-  // get the days rain total in mm and convert to inches
-  String? precipitationSnowQpf = convertCmToIn(double.parse(
-          detailedLocationForecastData[index]['totalSnowfall_cm'] ?? '0.0'))
-      .toString();
-
-  String? dailyQpf = '0.0';
-  String? weatherType;
-  // snow and rain count as snow only in mountains
-  if (double.parse(precipitationRainQpf) > 0.0 &&
-      double.parse(precipitationSnowQpf) > 0.0) {
-    dailyQpf = precipitationSnowQpf.toString();
-    weatherType = 'Snow';
-  }
-  // rain only
-  else if (double.parse(precipitationRainQpf) > 0.0 &&
-      double.parse(precipitationSnowQpf) <= 0.0) {
-    dailyQpf = precipitationRainQpf;
-    weatherType = 'Rain';
-    // Snow only
-  } else if (double.parse(precipitationRainQpf) <= 0.0 &&
-      double.parse(precipitationSnowQpf) > 0.0) {
-    dailyQpf = precipitationSnowQpf;
-    weatherType = 'Snow';
-    // no snow and no rain
-  } else {
-    dailyQpf = '0.0';
-    weatherType = 'No rain or snow';
-  }
-
-  return [weatherType, dailyQpf];
-}
-
-List<num> getDailyTemperatures(detailedLocationForecastData, index) {
-  num baseMin = double.parse(
-      detailedLocationForecastData[index]['bottom'][0]['mintempF']);
-  var baseMax = double.parse(
-      detailedLocationForecastData[index]['bottom'][0]['maxtempF']);
-  var midMin =
-      double.parse(detailedLocationForecastData[index]['mid'][0]['mintempF']);
-  var midMax =
-      double.parse(detailedLocationForecastData[index]['mid'][0]['maxtempF']);
-  var topMin =
-      double.parse(detailedLocationForecastData[index]['top'][0]['mintempF']);
-  var topMax =
-      double.parse(detailedLocationForecastData[index]['top'][0]['maxtempF']);
-
-  num avgMin = (baseMin + midMin + topMin) / 3;
-  num avgMax = (baseMax + midMax + topMax) / 3;
-
-  return [avgMin, avgMax];
-}
