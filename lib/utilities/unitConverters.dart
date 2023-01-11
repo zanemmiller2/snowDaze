@@ -16,14 +16,15 @@ import 'package:timezone/timezone.dart' as tz;
 /// DateTime DateTime
 /// int Epoch
 
-String convertUTCToLocalTimeMMMd(String time) =>
-    DateFormat.MMMEd().add_jm().format(DateTime.parse(time).toLocal());
+String convertUTCToLocalTimeMMMd(String time) {
+  /// String '2022-12-24T12:54:51Z' => String 'DEC 24, 2022'
+  return DateFormat.MMMEd().add_jm().format(DateTime.parse(time).toLocal());
+}
 
-/// String '2022-12-24T12:54:51Z' => String 'DEC 24, 2022'
-
-DateTime convertUTCtoDateTime(String time) => DateTime.parse(time).toLocal();
-
-/// String '2022-12-24T12:54:51Z' => DateTime()
+DateTime convertUTCtoDateTime(String time) {
+  /// String '2022-12-24T12:54:51Z' => DateTime()
+  return DateTime.parse(time).toLocal();
+}
 
 DateTime convertToLocationLocalTime(String lat, String long, int time) {
   /// Receives (int EpochTime, latitude, and longitude),
@@ -44,40 +45,46 @@ DateTime convertToLocationLocalTime(String lat, String long, int time) {
   return tz.TZDateTime.from(utcTime, timeZone);
 }
 
-int convertUTCtoEpoch(String time) =>
-    DateTime.parse(time).millisecondsSinceEpoch ~/ 1000;
+int convertUTCtoEpoch(String time) {
+  /// '2022-12-24T12:54:51Z' => int 1671886491
+  return DateTime.parse(time).millisecondsSinceEpoch ~/ 1000;
+}
 
-/// '2022-12-24T12:54:51Z' => int 1671886491
+DateTime convertEpochToLocalTime(int time) {
+  /// int 1671886491 => DateTime(systemLocal)
+  return DateTime.fromMillisecondsSinceEpoch(time * 1000).toLocal();
+}
 
-DateTime convertEpochToLocalTime(int time) =>
-    DateTime.fromMillisecondsSinceEpoch(time * 1000).toLocal();
+DateTime convertEpochToDateTime(int time) {
+  /// int 1671886491 => DateTime()
+  return DateTime.fromMillisecondsSinceEpoch(time * 1000);
+}
 
-/// int 1671886491 => DateTime(systemLocal)
-
-DateTime convertEpochToDateTime(int time) =>
-    DateTime.fromMillisecondsSinceEpoch(time * 1000);
-
-/// int 1671886491 => DateTime()
-
-String convertEpochTimeTo12Hour(int time) =>
-    (DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(time * 1000)))
+String convertEpochTimeTo12Hour(int time) {
+  /// int 1671886491 => '4:54 AM'
+  return (DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(time * 1000)))
         .toString();
+}
 
-/// int 1671886491 => '4:54 AM'
+int convertDateTimeToEpoch(DateTime time) {
+  /// DateTime() => int 1671886491
+  return time.millisecondsSinceEpoch ~/ 1000;
+}
 
-int convertDateTimeToEpoch(DateTime time) =>
-    time.millisecondsSinceEpoch ~/ 1000;
+String dateTimeToHumanReadable(DateTime time) {
+  /// DateTime() => 'Mon, Jan 1 12:01 AM'
+  return DateFormat.MMMEd().add_jm().format(time);
+}
 
-/// DateTime() => int 1671886491
+double convertMetersToMiles(num meters) {
+  /// Convert meters to miles = (meters * 0.000621371)
+  return meters * 0.000621371;
+}
 
-String dateTimeToHumanReadable(DateTime time) =>
-    DateFormat.MMMEd().add_jm().format(time);
-
-/// DateTime() => 'Mon, Jan 1 12:01 AM'
-
-double convertMetersToMiles(num meters) => meters * 0.000621371;
-
-double converthPaToInHg (num hpa) => hpa * 0.02953;
+double converthPaToInHg (num hpa) {
+  /// Converts pressure in hPa to InHg = (hPa * 0.02953)
+  return hpa * 0.02953;
+}
 
 double convertMmToIn(qpf) {
   /// converts a double mm measurement to double inches
@@ -85,14 +92,28 @@ double convertMmToIn(qpf) {
 }
 
 double convertCmToIn(qpf) {
+  /// converts Cm to In = (cm / 2.54) rounded up
   return (qpf / 2.54).ceil().toDouble();
 }
 
 DateTime convertYYYMMDDToDateTime(String date) {
+  /// Converts string YYYY-MM-DD to DateTime Object
   return DateTime.parse(date);
 }
 
-double convertMphToKnots(num windSpeed) => windSpeed * 0.868976;
+String convertDateTimeToYYYMMDD(DateTime date) {
+  /// Converts DateTimeObject to String formatted YYYY-MM-DD
+  DateTime shortenedTime = DateTime(date.year, date.month, date.day);
+  String stringTime = shortenedTime.toUtc().toString();
+  stringTime = stringTime.split(' ')[0];
+  return stringTime;
+
+}
+
+double convertMphToKnots(num windSpeed) {
+  /// Converts MpH to Knots = (mph * 0.868976)
+  return windSpeed * 0.868976;
+}
 
 Color uvColor(uvi) {
   /// returns the uv level color
@@ -185,21 +206,25 @@ String convertMetersToFeet (String meters) {
 }
 
 void main() {
-  DateTime DateTimeTime = DateTime.now();
-  String UTCTime = '2022-12-24T12:54:51Z';
-  int EpochTime = 1671886491;
-  String lat = '40.7128';
-  String long = '-74.0060';
+  DateTime timeNow = DateTime.now();
+  convertDateTimeToYYYMMDD(DateTime(timeNow.year, timeNow.month, timeNow.day - 3));
+  convertDateTimeToYYYMMDD(DateTime(timeNow.year, timeNow.month, timeNow.day));
 
-  print(convertUTCToLocalTimeMMMd(UTCTime)); // 'Sat, Dec 24 4:54 AM'
-  print(convertUTCtoDateTime(UTCTime)); // DateTime 2022-12-24 04:54:51.000
-  print(convertEpochToLocalTime(
-      EpochTime)); // DateTime 2022-12-24 04:54:51.000 (System Local)
-  print(convertEpochToDateTime(EpochTime)); // DateTime 2022-12-24 04:54:51.000
-  print(convertUTCtoEpoch(UTCTime)); // 1671886491
-  print(convertDateTimeToEpoch(DateTimeTime)); // 1671887457
-  print(convertToLocationLocalTime(
-      lat, long, EpochTime)); // DateTime 2022-12-24 07:54:51.000-0500 (EST)
-  print(dateTimeToHumanReadable(DateTimeTime)); // 'Sat, Dec 24 5:10 AM'
-  print(convertEpochTimeTo12Hour(1671886491)); // '4:54 AM'
+  // DateTime DateTimeTime = DateTime.now();
+  // String UTCTime = '2022-12-24T12:54:51Z';
+  // int EpochTime = 1671886491;
+  // String lat = '40.7128';
+  // String long = '-74.0060';
+  //
+  // print(convertUTCToLocalTimeMMMd(UTCTime)); // 'Sat, Dec 24 4:54 AM'
+  // print(convertUTCtoDateTime(UTCTime)); // DateTime 2022-12-24 04:54:51.000
+  // print(convertEpochToLocalTime(
+  //     EpochTime)); // DateTime 2022-12-24 04:54:51.000 (System Local)
+  // print(convertEpochToDateTime(EpochTime)); // DateTime 2022-12-24 04:54:51.000
+  // print(convertUTCtoEpoch(UTCTime)); // 1671886491
+  // print(convertDateTimeToEpoch(DateTimeTime)); // 1671887457
+  // print(convertToLocationLocalTime(
+  //     lat, long, EpochTime)); // DateTime 2022-12-24 07:54:51.000-0500 (EST)
+  // print(dateTimeToHumanReadable(DateTimeTime)); // 'Sat, Dec 24 5:10 AM'
+  // print(convertEpochTimeTo12Hour(1671886491)); // '4:54 AM'
 }

@@ -80,8 +80,6 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
 
 
 
-
-
   @override
   void initState() {
     super.initState();
@@ -141,12 +139,12 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
   * ----------------------------------*/
 
   Future<void> fetchLocationData() async {
-    //TODO CONVERT TO USING WORLD WEATHER ONLINE
 
     WorldWeatherClass worldWeatherClass = WorldWeatherClass(
         latitude: latitude, longitude: longitude, resortName: resortName);
     // If the data exists in the db and its been updated less than an hour ago use the data from the db
-    if (await worldWeatherClass.checkIfDocExistsForLocation()) {
+    bool exists = await worldWeatherClass.checkIfDocExistsForLocation();
+    if (exists) {
       ForecastWeatherWWO detailedWeatherForecastFromDBWWO =
           await worldWeatherClass.fetchCurrentWeatherForecastFromFirestore();
       // data in db was updated less than an hour ago
@@ -156,14 +154,14 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
         // data was updated more than an hour ago ... use data from API call
       } else {
         detailedLocationForecastDataWWO =
-            await worldWeatherClass.fetchCurrentWeatherForecast(
+            await worldWeatherClass.fetchCurrentWeatherForecastFromWWOAPI(
                 await worldWeatherClass.getCurrentWeatherAPIUrl());
       }
 
       // Data doesn't currently exist in the database ... use the data from the API Call
     } else {
       detailedLocationForecastDataWWO =
-          await worldWeatherClass.fetchCurrentWeatherForecast(
+          await worldWeatherClass.fetchCurrentWeatherForecastFromWWOAPI(
               await worldWeatherClass.getCurrentWeatherAPIUrl());
     }
 
@@ -359,7 +357,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                     convertToLocationLocalTime(
                         detailedLocationForecastDataWWO.latitude,
                         detailedLocationForecastDataWWO.longitude,
-                        detailedLocationForecastDataWWO.alerts[index]['end']));
+                        detailedLocationForecastDataWWO.alerts[index]['start']));
                 return ListTile(
                     title: Column(
                       mainAxisSize: MainAxisSize.min,
