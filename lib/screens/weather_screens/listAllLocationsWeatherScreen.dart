@@ -139,13 +139,20 @@ class _AllLocationsState extends State<AllLocations> {
             MaterialPageRoute(
                 builder: (context) =>
                     DetailedForecastScreen(
+                      //TODO -- CONVERT TO MAP
                       latitude: allResortsList[index]['latitude'],
                       longitude: allResortsList[index]['longitude'],
                       resortName: allResortsList[index]['resortName'],
                       resortTwitterUserName: allResortsList[index]['twitterUserName'],
                       resortState: allResortsList[index]['state'],
-                      resortRoadConditions: allResortsList[index]['roadLinks'] ?? allResortsList[index]['roadConditionsLink']
-                    )),
+                      resortRoadConditions: allResortsList[index]['roadLinks'] ?? allResortsList[index]['roadConditionsLink'],
+                      resortForecastArea: allResortsList[index]['forecastArea'],
+                      resortForecastDiscussionLink: allResortsList[index]['weatherForecastDiscussionLink'],
+                      resortWebsite: allResortsList[index]['resortWebsite'],
+                      resortTrailMaps: allResortsList[index]['trailMaps'],
+                      liftTerrainStatus: allResortsList[index]['liftGroomStatus']
+                    )
+            ),
           );
         }
     );

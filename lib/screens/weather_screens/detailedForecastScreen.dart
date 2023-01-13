@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:core';
 
 // Flutter imports:
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -33,6 +34,11 @@ class DetailedForecastScreen extends StatefulWidget {
   final String resortTwitterUserName;
   final String resortState;
   final dynamic resortRoadConditions;
+  final String resortForecastArea;
+  final String resortForecastDiscussionLink;
+  final String resortWebsite;
+  final Map resortTrailMaps;
+  final String liftTerrainStatus;
 
   const DetailedForecastScreen(
       {
@@ -42,7 +48,12 @@ class DetailedForecastScreen extends StatefulWidget {
         required this.longitude,
         required this.resortName,
         required this.resortState,
-        required this.resortRoadConditions
+        required this.resortRoadConditions,
+        required this.resortForecastArea,
+        required this.resortForecastDiscussionLink,
+        required this.resortTrailMaps,
+        required this.resortWebsite,
+        required this.liftTerrainStatus,
       });
 
   @override
@@ -55,6 +66,8 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
   late ForecastWeatherWWO detailedLocationForecastDataWWO;
   late CurrentWeather detailedLocationForecastData;
   List tweetsList = [];
+  List mapNames = [];
+  List mapLinks = [];
   bool _gotData = false;
   static const daysOfWeekAbr = [
     '',
@@ -85,11 +98,13 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
   void initState() {
     super.initState();
     fetchTweets().whenComplete(() => {
-      // get the location data for the specified location
-      fetchLocationData().whenComplete(() {
-        setState(() {
-          _gotData = true;
-        });
+      fetchTrailMapUrls().whenComplete(() => {
+        // get the location data for the specified location
+        fetchLocationData().whenComplete(() {
+          setState(() {
+            _gotData = true;
+          });
+        })
       })
     });
   }
@@ -107,6 +122,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
             child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  resortDetails(),
                   // TRAFFIC
                   trafficConditionsWidget(),
                   // ALERTS
@@ -114,6 +130,8 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                       flex: 1, fit: FlexFit.loose,
                       child: alertsWidget(context)
                   ),
+                  // NWS FORECAST DISCUSSION
+                  forecastDiscussionWidget(context),
                   // CURRENT WEATHER
                   Flexible(
                       flex: 1,
@@ -233,6 +251,78 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
     }
   }
 
+  Future<void> fetchTrailMapUrls () async {
+    await resortTrailMaps.forEach((k, v) async {
+      mapNames.add(k);
+      mapLinks.add(await FirebaseStorage.instance.refFromURL(v).getDownloadURL());
+    });
+  }
+
+  /*------------------------------------
+  *         RESORT DETAILS
+  * ----------------------------------*/
+
+  Widget resortDetails() {
+    return formattingWidget(
+      Column(
+        children: [
+          Container(
+              padding: const EdgeInsets.only(left: 10.0),
+              alignment: Alignment.centerLeft,
+              child: const Text('Resort Details')
+          ),
+          horizontalDivider(),
+          InkWell(
+            child: const Text('Resort Website',
+              style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: 25
+              ),
+            ),
+            onTap: () => launchUrl(
+              Uri.parse(resortWebsite),
+              mode: LaunchMode.externalApplication,
+            ),
+          ),
+          InkWell(
+            child: const Text('Lift and Terrain Status',
+              style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: 25
+              ),
+            ),
+            onTap: () => launchUrl(
+              Uri.parse(liftTerrainStatus),
+              mode: LaunchMode.externalApplication,
+            ),
+          ),
+          ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: resortTrailMaps.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Container(
+                    alignment: Alignment.center,
+                    child: InkWell(
+                      child: Text('${mapNames[index]} Winter Trail Map',
+                        style: const TextStyle(
+                            color: Colors.blueAccent,
+                            fontSize: 25
+                        ),
+                      ),
+                      onTap: () => launchUrl(
+                          Uri.parse(mapLinks[index]),
+                          mode: LaunchMode.externalApplication),
+                    ),
+                  ),
+                );
+              }
+          ),
+        ],
+      )
+    );
+  }
 
   /*------------------------------------
   *          TRAFFIC CONDITIONS
@@ -258,18 +348,18 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                 Container(
                     padding: const EdgeInsets.only(left: 10.0),
                     alignment: Alignment.centerLeft,
-                    child: Text(title)
+                    child: const Text('Road Conditions')
                 ),
                 horizontalDivider(),
                 InkWell(
-                  child: Text('$resortState Road Conditions Link',
+                  child: Text(title,
                     style: const TextStyle(
                         color: Colors.blueAccent,
                         fontSize: 25
                     ),
                   ),
                   onTap: () => launchUrl(Uri.parse(resortRoadConditions)),
-                )
+                ),
               ]
           )
       );
@@ -410,6 +500,32 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
     } else {
       return const SizedBox.shrink();
     }
+  }
+
+  /*------------------------------------
+  *       FORECAST DISCUSSION
+  * ----------------------------------*/
+  Widget forecastDiscussionWidget(context) {
+    return formattingWidget(
+        Column(
+            children: [
+              Container(padding: const EdgeInsets.only(left: 10.0),
+                  alignment: Alignment.centerLeft,
+                  child: Text('NWS Area Forecast Discussion - $resortForecastArea')
+              ),
+              horizontalDivider(),
+              InkWell(
+                child: const Text('NWS Forecast Discussion',
+                  style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 25
+                  ),
+                ),
+                onTap: () => launchUrl(Uri.parse(forecastDiscussionLink)),
+              ),
+            ]
+        )
+    );
   }
 
   /*------------------------------------
@@ -639,7 +755,11 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
   get resortState => widget.resortState;
   get resortRoadConditions => widget.resortRoadConditions;
   get previousWeatherWWO => detailedLocationForecastDataWWO.previous3DaysWeather['data']['weather'];
-
+  get resortForecastArea => widget.resortForecastArea;
+  get forecastDiscussionLink => widget.resortForecastDiscussionLink;
+  get resortWebsite => widget.resortWebsite;
+  get resortTrailMaps => widget.resortTrailMaps;
+  get liftTerrainStatus => widget.liftTerrainStatus;
   /*------------------------------------
   *           FORMAT WIDGETS
   * ----------------------------------*/
