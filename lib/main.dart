@@ -1,26 +1,15 @@
-// Flutter Imports
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-// Firebase imports
+// Package imports:
 import 'package:firebase_core/firebase_core.dart';
-import 'package:snow_daze/screens/authenticate/authWrapper.dart';
-import 'package:snow_daze/services/authService.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'firebase_options.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-
-// Third Party Package Imports
-// import 'package:sqflite/sqflite.dart';
 import 'package:provider/provider.dart';
 
-// Screen Imports
-// import 'package:snow_daze/screens/splash_page.dart';
-
-import 'models/FirebaseUser.dart';
-
-// Custom Utility Imports
-
+// Project imports:
+import 'package:snow_daze/screens/authentication_screens/authWrapper.dart';
+import 'package:snow_daze/services/authService.dart';
+import 'models/users/firebaseUser.dart';
 
 void main() async {
 
@@ -28,7 +17,9 @@ void main() async {
 
   // Set preferred orientations
   SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.landscapeRight,
+    DeviceOrientation.landscapeLeft,
   ]);
 
   // initialize Firebase using the DefaultFirebaseOptions object

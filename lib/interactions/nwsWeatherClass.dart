@@ -1,12 +1,15 @@
 
 
+// Package imports:
 import 'package:http/http.dart' as http;
-import 'package:xml/xml.dart';
 import 'package:intl/intl.dart';
+import 'package:xml/xml.dart';
 
+// Project imports:
+import 'package:snow_daze/utilities/unitConverters.dart';
 import '../services/debugLogFunction.dart';
 
-class WeatherForecast {
+class NWSWeatherForecast {
 
   XmlDocument? xmlData;
   String? nwsSourceURL;
@@ -14,8 +17,8 @@ class WeatherForecast {
   /* Metadata */
   String? sourceCredit;
   List<String> timeLayoutKeys = [];
-  List<String> startTimes = [];
-  List<String> endTimes = [];
+  List<DateTime> startTimes = [];
+  List<DateTime> endTimes = [];
   String? creationDate;
 
   /* Location Data */
@@ -56,7 +59,7 @@ class WeatherForecast {
   List<List<String?>> weatherConditionsCoverage = [];
 
   /* Class Constructor */
-  WeatherForecast(String latitude, String longitude) {
+  NWSWeatherForecast(String latitude, String longitude) {
     // sets weather forecast source url
     nwsSourceURL =
         "https://forecast.weather.gov/MapClick.php?lat=$latitude&lon=$longitude&FcstType=digitalDWML";
@@ -68,7 +71,6 @@ class WeatherForecast {
     setCreationDate();
     setSourceCredit();
     setLayoutKeys();
-    setStartEndTimes();
     setStartEndTimes();
     setLatLong();
     setAreaDescription();
@@ -163,7 +165,7 @@ class WeatherForecast {
         ?.findAllElements("start-valid-time")
         .map((node) => node.text)
         .forEach((element) {
-      startTimes.add(convertToLocalTime(element));
+      startTimes.add(convertUTCtoDateTime(element));
     });
 
     // get and store end times
@@ -171,7 +173,7 @@ class WeatherForecast {
         ?.findAllElements("end-valid-time")
         .map((node) => node.text)
         .forEach((element) {
-      endTimes.add(convertToLocalTime(element));
+      endTimes.add(convertUTCtoDateTime(element));
     });
   }
 
@@ -440,7 +442,7 @@ class WeatherForecast {
         // use 0.0 instead of null
         for (var tempAmount in tempHourlyQpfAmount) {
           if (tempAmount.isEmpty) {
-            hourlyQpf.add("NA");
+            hourlyQpf.add(0.0);
           } else {
             hourlyQpf.add(double.parse(tempAmount));
           }
@@ -496,7 +498,7 @@ void main() async {
 
   var latitude = "36.7311";
   var longitude = "-91.8531";
-  WeatherForecast weather = WeatherForecast(latitude, longitude);
+  NWSWeatherForecast weather = NWSWeatherForecast(latitude, longitude);
   await weather.initialize();   // sets the class attributes for the weather_forecast
 
   /* Meta Data */

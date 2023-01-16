@@ -1,7 +1,8 @@
-
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:snow_daze/screens/authenticate/register.dart';
 
+// Project imports:
+import 'package:snow_daze/screens/authentication_screens/register.dart';
 import 'login.dart';
 
 class Handler extends StatefulWidget {
