@@ -17,18 +17,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   // Pages
   static const List<Widget> _pages = <Widget>[
-    Icon(
-      Icons.home_outlined,
-      size: 150,
-    ),
-    Icon(
-      Icons.downhill_skiing_outlined,
-      size: 150,
-    ),
-  Icon(
-    Icons.ac_unit_outlined,
-    size: 150,
-  ),
     AllLocations(),
     Icon(
       Icons.settings_outlined,
@@ -40,6 +28,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xff7686A6),
         title: const Text("SnowDaze"),
       ),
       drawer: const SideDrawer(),
@@ -47,7 +36,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
         child: _pages.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar (
+        type: BottomNavigationBarType.shifting,
         currentIndex: _selectedIndex,
+        backgroundColor: Color(0xff7686A6),
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
@@ -57,43 +48,19 @@ class _BottomNavBarState extends State<BottomNavBar> {
         items:  const [
           BottomNavigationBarItem(
               icon: Icon(
-                Icons.home_outlined,
-                color: Colors.white,
+                  Icons.my_location_sharp,
+                  color: Color(0xffA66370)
               ),
-              label: "Home",
-              backgroundColor: Colors.indigo
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(
-                  Icons.downhill_skiing_outlined,
-                  color: Colors.white
-              ),
-              label: "Resorts",
-              backgroundColor: Colors.blueAccent
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(
-                  Icons.ac_unit_outlined,
-                  color: Colors.white
-              ),
-              label: "Weather",
-              backgroundColor: Colors.red
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(
-                  Icons.add_location,
-                  color: Colors.white
-              ),
-              label: "Add New",
-              backgroundColor: Colors.green
+              label: "All Locations",
+              backgroundColor: Color(0xff7686A6),
           ),
           BottomNavigationBarItem(
               icon: Icon(
                   Icons.settings_outlined,
-                  color: Colors.white
+                  color: Color(0xffA66370)
               ),
               label: "Settings",
-              backgroundColor: Colors.grey
+              backgroundColor: Color(0xff7686A6),
           ),
         ],
       ),

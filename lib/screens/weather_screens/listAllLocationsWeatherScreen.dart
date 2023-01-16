@@ -84,30 +84,20 @@ class _AllLocationsState extends State<AllLocations> {
 
   Widget _buildAvailableLocationsListItem(BuildContext context, index, allResortsList) {
     /// builds a list tile for each resort
-    return ListTile(
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(
-                allResortsList[index]['resortName'],
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-            ),
-            Container(
-              decoration: const BoxDecoration(
-                color: Color(0xffddddff),
-              ),
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                currentWeather[index]['main'].toString(),
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-            ),
-            Container(
-              decoration: const BoxDecoration(
-                color: Color(0xffddddff),
-              ),
-              child: Image.network(
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          vertical: 5.0,
+          horizontal: 10.0
+      ),
+      child: Card(
+        elevation: 10.0,
+        shadowColor: const Color(0xFF7686A6),
+        color: const Color(0xBFFFB7AD),
+        child: ListTile(
+          leading: Container(
+            padding: const EdgeInsets.all(5.0),
+            width: 50.0,
+            child: Image.network(
                 'https://openweathermap.org/img/w/${currentWeather[index]["icon"]}.png',
                 loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                   if (loadingProgress == null) return child;
@@ -120,41 +110,68 @@ class _AllLocationsState extends State<AllLocations> {
                     ),
                   );
                 }),
-              ),
-            Container(
-              decoration: const BoxDecoration(
-                color: Color(0xffddddff),
-              ),
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                '${currentTemps[index].toString()}\u00b0',
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
+          ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Resort Name
+                SizedBox(
+                  width: 125.0,
+                  child: Text(
+                    allResortsList[index]['resortName'],
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                        color: Color(0xFF454259),
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                // Weather Description
+                SizedBox(
+                  child: Text(
+                    currentWeather[index]['main'].toString(),
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                        color: Color(0xFF454259),
+                        fontWeight: FontWeight.bold,),
+                  ),
+                ),
+                // Temperature
+                SizedBox(
+                  child: Text(
+                    '${currentTemps[index].toString()}\u00b0',
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(
+                        color: Color(0xFF454259),
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
             ),
-          ],
+            trailing: const Icon(Icons.arrow_forward_ios, color: Color(0xff7686A6),),
+            onTap: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        DetailedForecastScreen(
+                          //TODO -- CONVERT TO MAP
+                          latitude: allResortsList[index]['latitude'],
+                          longitude: allResortsList[index]['longitude'],
+                          resortName: allResortsList[index]['resortName'],
+                          resortTwitterUserName: allResortsList[index]['twitterUserName'],
+                          resortState: allResortsList[index]['state'],
+                          resortRoadConditions: allResortsList[index]['roadLinks'] ?? allResortsList[index]['roadConditionsLink'],
+                          resortForecastArea: allResortsList[index]['forecastArea'],
+                          resortForecastDiscussionLink: allResortsList[index]['weatherForecastDiscussionLink'],
+                          resortWebsite: allResortsList[index]['resortWebsite'],
+                          resortTrailMaps: allResortsList[index]['trailMaps'],
+                          liftTerrainStatus: allResortsList[index]['liftGroomStatus']
+                        )
+                ),
+              );
+            }
         ),
-        onTap: () async {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    DetailedForecastScreen(
-                      //TODO -- CONVERT TO MAP
-                      latitude: allResortsList[index]['latitude'],
-                      longitude: allResortsList[index]['longitude'],
-                      resortName: allResortsList[index]['resortName'],
-                      resortTwitterUserName: allResortsList[index]['twitterUserName'],
-                      resortState: allResortsList[index]['state'],
-                      resortRoadConditions: allResortsList[index]['roadLinks'] ?? allResortsList[index]['roadConditionsLink'],
-                      resortForecastArea: allResortsList[index]['forecastArea'],
-                      resortForecastDiscussionLink: allResortsList[index]['weatherForecastDiscussionLink'],
-                      resortWebsite: allResortsList[index]['resortWebsite'],
-                      resortTrailMaps: allResortsList[index]['trailMaps'],
-                      liftTerrainStatus: allResortsList[index]['liftGroomStatus']
-                    )
-            ),
-          );
-        }
+      ),
     );
   }
 
@@ -165,13 +182,18 @@ class _AllLocationsState extends State<AllLocations> {
       return const ProgressWithIcon();
     }
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("search all resorts page"),
-        ),
-        body: ListView.builder(
-            itemExtent: 80.0,
-            itemCount: allResortsList.length,
-            itemBuilder: (context, index) =>
-                _buildAvailableLocationsListItem(context, index, allResortsList)));
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/images/winter_sunsetBackground.jpg'),
+                fit: BoxFit.cover
+            )
+          ),
+          child: ListView.builder(
+              itemExtent: 80.0,
+              itemCount: allResortsList.length,
+              itemBuilder: (context, index) =>
+                  _buildAvailableLocationsListItem(context, index, allResortsList)),
+        ));
   }
 }

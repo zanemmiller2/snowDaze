@@ -1,23 +1,21 @@
-
 // Dart imports:
 import 'dart:convert';
 import 'dart:core';
 
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 // Flutter imports:
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
-// Package imports:
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tweet_ui/tweet_ui.dart';
-import 'package:twitter_api_v2/twitter_api_v2.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 // Project imports:
 import 'package:snow_daze/auth/secrets.dart';
 import 'package:snow_daze/interactions/worldWeatherOnlineAPI.dart';
 import 'package:snow_daze/screens/weather_screens/detailedAlertScreen.dart';
 import 'package:snow_daze/utilities/unitConverters.dart';
+import 'package:tweet_ui/tweet_ui.dart';
+import 'package:twitter_api_v2/twitter_api_v2.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../interactions/openWeatherClass.dart';
 import '../../models/weather/currentWeather.dart';
 import '../../models/weather/currentWeatherWWO.dart';
@@ -40,28 +38,26 @@ class DetailedForecastScreen extends StatefulWidget {
   final Map resortTrailMaps;
   final String liftTerrainStatus;
 
-  const DetailedForecastScreen(
-      {
-        super.key,
-        required this.resortTwitterUserName,
-        required this.latitude,
-        required this.longitude,
-        required this.resortName,
-        required this.resortState,
-        required this.resortRoadConditions,
-        required this.resortForecastArea,
-        required this.resortForecastDiscussionLink,
-        required this.resortTrailMaps,
-        required this.resortWebsite,
-        required this.liftTerrainStatus,
-      });
+  const DetailedForecastScreen({
+    super.key,
+    required this.resortTwitterUserName,
+    required this.latitude,
+    required this.longitude,
+    required this.resortName,
+    required this.resortState,
+    required this.resortRoadConditions,
+    required this.resortForecastArea,
+    required this.resortForecastDiscussionLink,
+    required this.resortTrailMaps,
+    required this.resortWebsite,
+    required this.liftTerrainStatus,
+  });
 
   @override
   State<DetailedForecastScreen> createState() => _DetailedForecastScreenState();
 }
 
 class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
-
   DocumentSnapshot? detailedLocationForecastSnapshot;
   late ForecastWeatherWWO detailedLocationForecastDataWWO;
   late CurrentWeather detailedLocationForecastData;
@@ -79,6 +75,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
     'Sat',
     'Sun'
   ];
+
   // Initialize twitter handler
   final _twitter = TwitterApi(
     bearerToken: twitterBearerToken,
@@ -86,27 +83,27 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
       maxAttempts: 5,
       onExecute: (event) => print(
         'Retry after ${event.intervalInSeconds} seconds... '
-            '[${event.retryCount} times]',
+        '[${event.retryCount} times]',
       ),
     ),
     timeout: const Duration(seconds: 10),
   );
 
-
-
   @override
   void initState() {
     super.initState();
+    // get the list of tweets from account
     fetchTweets().whenComplete(() => {
-      fetchTrailMapUrls().whenComplete(() => {
-        // get the location data for the specified location
-        fetchLocationData().whenComplete(() {
-          setState(() {
-            _gotData = true;
-          });
-        })
-      })
-    });
+          // get the list of trail map links from db
+          fetchTrailMapUrls().whenComplete(() => {
+                // get the location data for the specified location
+                fetchLocationData().whenComplete(() {
+                  setState(() {
+                    _gotData = true;
+                  });
+                })
+              })
+        });
   }
 
   @override
@@ -116,41 +113,39 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
       return const ProgressWithIcon();
     }
     return Scaffold(
-        appBar: AppBar(title: Text('$resortName Detailed')),
-        body: SingleChildScrollView(
-            physics: const ScrollPhysics(),
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  resortDetails(),
-                  // TRAFFIC
-                  trafficConditionsWidget(),
-                  // ALERTS
-                  Flexible(
-                      flex: 1, fit: FlexFit.loose,
-                      child: alertsWidget(context)
-                  ),
-                  // NWS FORECAST DISCUSSION
-                  forecastDiscussionWidget(context),
-                  // CURRENT WEATHER
-                  Flexible(
-                      flex: 1,
-                      fit: FlexFit.loose,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          currentWeatherSummaryWidget(context)
-                        ],
-                      )
-                  ),
-                  // DAILY WEATHER
-                  dailyWeatherWidgets(context),
-                  // TWITTER
-                  twitterTimeLineWidget()
-                ]
-            )
-        )
-    );
+        appBar: AppBar(title: Text('$resortName Detailed'),
+          backgroundColor: Color(0xff7686A6),),
+        body: Container(
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image:
+                      AssetImage('assets/images/winterSunsetBackground2.jpg'),
+                  fit: BoxFit.cover)),
+          child: SingleChildScrollView(
+              physics: const ScrollPhysics(),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                resortDetails(),
+                // TRAFFIC
+                trafficConditionsWidget(),
+                // ALERTS
+                Flexible(
+                    flex: 1, fit: FlexFit.loose, child: alertsWidget(context)),
+                // NWS FORECAST DISCUSSION
+                forecastDiscussionWidget(context),
+                // CURRENT WEATHER
+                Flexible(
+                    flex: 1,
+                    fit: FlexFit.loose,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [currentWeatherSummaryWidget(context)],
+                    )),
+                // DAILY WEATHER
+                dailyWeatherWidgets(context),
+                // TWITTER
+                twitterTimeLineWidget()
+              ])),
+        ));
   }
 
   /*------------------------------------
@@ -158,7 +153,6 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
   * ----------------------------------*/
 
   Future<void> fetchLocationData() async {
-
     WorldWeatherClass worldWeatherClass = WorldWeatherClass(
         latitude: latitude, longitude: longitude, resortName: resortName);
     // If the data exists in the db and its been updated less than an hour ago use the data from the db
@@ -216,13 +210,19 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
     // Get the userID from twitter UserName
     var userResponse = await _twitter.users.lookupByName(
         username: resortTwitterUserName,
-        userFields: [UserField.profileImageUrl, UserField.name]
-    );
+        userFields: [UserField.profileImageUrl, UserField.name]);
     String userID = userResponse.data.id;
 
     // Get all tweets from the beginning of today
-    var timeNow = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour, DateTime.now().minute, DateTime.now().second);
-    var timeBeginningDay = DateTime(timeNow.year, timeNow.month, timeNow.day, 0, 0).toUtc();
+    var timeNow = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        DateTime.now().hour,
+        DateTime.now().minute,
+        DateTime.now().second);
+    var timeBeginningDay =
+        DateTime(timeNow.year, timeNow.month, timeNow.day, 0, 0).toUtc();
     timeNow = timeNow.toUtc();
     try {
       var tweetsResponse = await _twitter.tweets.lookupTweets(
@@ -230,31 +230,49 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
           startTime: timeBeginningDay,
           endTime: timeNow,
           expansions: TweetExpansion.values,
-          tweetFields: [TweetField.createdAt, TweetField.source, TweetField.entities],
+          tweetFields: [
+            TweetField.createdAt,
+            TweetField.source,
+            TweetField.entities
+          ],
           mediaFields: MediaField.values,
-          userFields: [UserField.profileImageUrl, UserField.createdAt, UserField.entities, UserField.url],
-          placeFields: PlaceField.values
-      );
-      for(var element in tweetsResponse.data) {
+          userFields: [
+            UserField.profileImageUrl,
+            UserField.createdAt,
+            UserField.entities,
+            UserField.url
+          ],
+          placeFields: PlaceField.values);
+      for (var element in tweetsResponse.data) {
         tweetsList.add((jsonEncode(element)));
       }
-    } catch(e) {
+    } catch (e) {
       var tweetsResponse = await _twitter.tweets.lookupTweets(
-          userId: userID,
-          maxResults: 10,
-        tweetFields: [TweetField.createdAt, TweetField.source, TweetField.entities],
-        userFields: [UserField.profileImageUrl, UserField.createdAt, UserField.entities, UserField.url],
+        userId: userID,
+        maxResults: 10,
+        tweetFields: [
+          TweetField.createdAt,
+          TweetField.source,
+          TweetField.entities
+        ],
+        userFields: [
+          UserField.profileImageUrl,
+          UserField.createdAt,
+          UserField.entities,
+          UserField.url
+        ],
       );
-      for(var element in tweetsResponse.data) {
+      for (var element in tweetsResponse.data) {
         tweetsList.add((jsonEncode(element)));
       }
     }
   }
 
-  Future<void> fetchTrailMapUrls () async {
+  Future<void> fetchTrailMapUrls() async {
     await resortTrailMaps.forEach((k, v) async {
       mapNames.add(k);
-      mapLinks.add(await FirebaseStorage.instance.refFromURL(v).getDownloadURL());
+      mapLinks
+          .add(await FirebaseStorage.instance.refFromURL(v).getDownloadURL());
     });
   }
 
@@ -263,160 +281,149 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
   * ----------------------------------*/
 
   Widget resortDetails() {
-    return formattingWidget(
-      Column(
-        children: [
-          Container(
-              padding: const EdgeInsets.only(left: 10.0),
-              alignment: Alignment.centerLeft,
-              child: const Text('Resort Details')
-          ),
-          horizontalDivider(),
-          InkWell(
-            child: const Text('Resort Website',
+    return formattingWidget(Column(
+      children: [
+        Container(
+            padding: const EdgeInsets.only(left: 10.0),
+            alignment: Alignment.centerLeft,
+            child: const Text(
+              'Resort Details',
+              textAlign: TextAlign.left,
               style: TextStyle(
-                  color: Colors.blueAccent,
-                  fontSize: 25
-              ),
+                  color: Color(0xFF454259), fontWeight: FontWeight.bold),
+            )),
+        horizontalDivider(),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: InkWell(
+            child: const Text(
+              'Resort Website',
+              style: TextStyle(color: Colors.blueAccent, fontSize: 25),
             ),
             onTap: () => launchUrl(
               Uri.parse(resortWebsite),
               mode: LaunchMode.externalApplication,
             ),
           ),
-          InkWell(
-            child: const Text('Lift and Terrain Status',
-              style: TextStyle(
-                  color: Colors.blueAccent,
-                  fontSize: 25
-              ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: InkWell(
+            child: const Text(
+              'Lift and Terrain Status',
+              style: TextStyle(color: Colors.blueAccent, fontSize: 25),
             ),
             onTap: () => launchUrl(
               Uri.parse(liftTerrainStatus),
               mode: LaunchMode.externalApplication,
             ),
           ),
-          ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: resortTrailMaps.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Container(
-                    alignment: Alignment.center,
-                    child: InkWell(
-                      child: Text('${mapNames[index]} Winter Trail Map',
-                        style: const TextStyle(
-                            color: Colors.blueAccent,
-                            fontSize: 25
-                        ),
-                      ),
-                      onTap: () => launchUrl(
-                          Uri.parse(mapLinks[index]),
-                          mode: LaunchMode.externalApplication),
+        ),
+        ListView.builder(
+            padding: const EdgeInsets.all(0.0),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: resortTrailMaps.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Container(
+                  alignment: Alignment.center,
+                  child: InkWell(
+                    child: Text(
+                      '${mapNames[index]} Winter Trail Map',
+                      style: const TextStyle(
+                          color: Colors.blueAccent, fontSize: 25),
                     ),
+                    onTap: () => launchUrl(Uri.parse(mapLinks[index]),
+                        mode: LaunchMode.externalApplication),
                   ),
-                );
-              }
-          ),
-        ],
-      )
-    );
+                ),
+              );
+            }),
+      ],
+    ));
   }
 
   /*------------------------------------
   *          TRAFFIC CONDITIONS
   * ----------------------------------*/
 
-  Widget trafficConditionsWidget () {
+  Widget trafficConditionsWidget() {
     /// Renders the traffic widget with links for each resort
     String title;
-    if(resortState == 'CA') {
+    if (resortState == 'CA') {
       title = 'CalTrans Road Conditions';
     } else if (resortState == 'WA') {
       title = 'WASDOT Road Conditions';
-    } else if (resortState == 'NV'){
+    } else if (resortState == 'NV') {
       title = 'Nevada Road Conditions';
     } else {
       title = 'Colorado Road Conditions';
     }
 
-    if(resortState == 'CA' || resortState == 'NV' || resortState =='CO') {
-      return formattingWidget(
-          Column(
-              children: [
-                Container(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    alignment: Alignment.centerLeft,
-                    child: const Text('Road Conditions')
-                ),
-                horizontalDivider(),
-                InkWell(
-                  child: Text(title,
-                    style: const TextStyle(
-                        color: Colors.blueAccent,
-                        fontSize: 25
-                    ),
-                  ),
-                  onTap: () => launchUrl(Uri.parse(resortRoadConditions)),
-                ),
-              ]
-          )
-      );
+    if (resortState == 'CA' || resortState == 'NV' || resortState == 'CO') {
+      return formattingWidget(Column(children: [
+        Container(
+            padding: const EdgeInsets.only(left: 10.0),
+            alignment: Alignment.centerLeft,
+            child: const Text(
+              'Road Conditions',
+              style: TextStyle(
+                  color: Color(0xFF454259), fontWeight: FontWeight.bold),
+            )),
+        horizontalDivider(),
+        InkWell(
+          child: Text(
+            title,
+            style: const TextStyle(color: Colors.blueAccent, fontSize: 25),
+          ),
+          onTap: () => launchUrl(Uri.parse(resortRoadConditions)),
+        ),
+      ]));
     } else if (resortState == 'WA') {
-      return formattingWidget(
-          Column(
-              children: [
-                Container(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    alignment: Alignment.centerLeft,
-                    child: Text(title)
-                ),
-                horizontalDivider(),
-                InkWell(
-                  child: const Text('Traffic Alerts',
-                    style: TextStyle(
-                        color: Colors.blueAccent,
-                        fontSize: 25
-                  ),),
-                  onTap: () => launchUrl(Uri.parse(resortRoadConditions['roadAlertsLink'])),
-                ),
-                InkWell(
-                  child: const Text('Traffic Cameras',
-                    style: TextStyle(
-                      color: Colors.blueAccent,
-                        fontSize: 25
-                    ),
-                  ),
-                  onTap: () => launchUrl(Uri.parse(resortRoadConditions['roadCamerasLink'])),
-                ),
-                InkWell(
-                  child: const Text('Mountain Pass Report',
-                    style: TextStyle(
-                      color: Colors.blueAccent,
-                      fontSize: 25
-                    ),
-                  ),
-                  onTap: () => launchUrl(Uri.parse(resortRoadConditions['mountainPassReportLink'])),
-                ),
-                InkWell(
-                  child: const Text('Truck Restrictions',
-                    style: TextStyle(
-                      color: Colors.blueAccent,
-                        fontSize: 25
-                    ),
-                  ),
-                  onTap: () => launchUrl(Uri.parse(resortRoadConditions['truckRestictionsLink'])),
-                ),
-              ]
-          )
-      );
-
+      return formattingWidget(Column(children: [
+        Container(
+            padding: const EdgeInsets.only(left: 10.0),
+            alignment: Alignment.centerLeft,
+            child: Text(title)),
+        horizontalDivider(),
+        InkWell(
+          child: const Text(
+            'Traffic Alerts',
+            style: TextStyle(color: Colors.blueAccent, fontSize: 25),
+          ),
+          onTap: () =>
+              launchUrl(Uri.parse(resortRoadConditions['roadAlertsLink'])),
+        ),
+        InkWell(
+          child: const Text(
+            'Traffic Cameras',
+            style: TextStyle(color: Colors.blueAccent, fontSize: 25),
+          ),
+          onTap: () =>
+              launchUrl(Uri.parse(resortRoadConditions['roadCamerasLink'])),
+        ),
+        InkWell(
+          child: const Text(
+            'Mountain Pass Report',
+            style: TextStyle(color: Colors.blueAccent, fontSize: 25),
+          ),
+          onTap: () => launchUrl(
+              Uri.parse(resortRoadConditions['mountainPassReportLink'])),
+        ),
+        InkWell(
+          child: const Text(
+            'Truck Restrictions',
+            style: TextStyle(color: Colors.blueAccent, fontSize: 25),
+          ),
+          onTap: () => launchUrl(
+              Uri.parse(resortRoadConditions['truckRestictionsLink'])),
+        ),
+      ]));
     } else {
       return const SizedBox.shrink();
     }
   }
-
 
   /*------------------------------------
   *           ALERTS
@@ -434,7 +441,11 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
             Container(
                 padding: const EdgeInsets.only(left: 10.0),
                 alignment: Alignment.centerLeft,
-                child: const Text('Weather Alerts')),
+                child: const Text(
+                  'Weather Alerts',
+                  style: TextStyle(
+                      color: Color(0xFF454259), fontWeight: FontWeight.bold),
+                )),
             ListView.builder(
               shrinkWrap: true,
               itemCount: detailedLocationForecastDataWWO.alerts.length,
@@ -448,7 +459,8 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                     convertToLocationLocalTime(
                         detailedLocationForecastDataWWO.latitude,
                         detailedLocationForecastDataWWO.longitude,
-                        detailedLocationForecastDataWWO.alerts[index]['start']));
+                        detailedLocationForecastDataWWO.alerts[index]
+                            ['start']));
                 return ListTile(
                     title: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -476,7 +488,8 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                             child: Text(
                               '${detailedLocationForecastDataWWO.alerts[index]['sender_name']}',
                               style: Theme.of(context).textTheme.bodySmall,
-                            )),
+                            )
+                        ),
                       ],
                     ),
                     // onTap() => longer detail
@@ -506,34 +519,32 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
   *       FORECAST DISCUSSION
   * ----------------------------------*/
   Widget forecastDiscussionWidget(context) {
-    return formattingWidget(
-        Column(
-            children: [
-              Container(padding: const EdgeInsets.only(left: 10.0),
-                  alignment: Alignment.centerLeft,
-                  child: Text('NWS Area Forecast Discussion - $resortForecastArea')
-              ),
-              horizontalDivider(),
-              InkWell(
-                child: const Text('NWS Forecast Discussion',
-                  style: TextStyle(
-                      color: Colors.blueAccent,
-                      fontSize: 25
-                  ),
-                ),
-                onTap: () => launchUrl(Uri.parse(forecastDiscussionLink)),
-              ),
-            ]
-        )
-    );
+    return formattingWidget(Column(children: [
+      Container(
+          padding: const EdgeInsets.only(left: 10.0),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'NWS Area Forecast Discussion - $resortForecastArea',
+            style: const TextStyle(
+                color: Color(0xFF454259), fontWeight: FontWeight.bold),
+          )),
+      horizontalDivider(),
+      InkWell(
+        child: const Text(
+          'NWS Forecast Discussion',
+          style: TextStyle(color: Colors.blueAccent, fontSize: 25),
+        ),
+        onTap: () => launchUrl(Uri.parse(forecastDiscussionLink)),
+      ),
+    ]));
   }
 
   /*------------------------------------
   *        CURRENT SUMMARY
   * ----------------------------------*/
   Widget currentWeatherSummaryWidget(BuildContext context) {
-
-    String previous3DaySnowFallIn = getPrevious3DaysSnowFall(previousWeatherWWO);
+    String previous3DaySnowFallIn =
+        getPrevious3DaysSnowFall(previousWeatherWWO);
 
     /// builds the current weather top widget bar
     return InkWell(
@@ -542,7 +553,11 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
           children: [
             Container(
               alignment: Alignment.centerLeft,
-              child: Text('Weather Summary - ${dateTimeToHumanReadable(convertToLocationLocalTime(detailedLocationForecastData.lat, detailedLocationForecastData.lon, detailedLocationForecastDataCurrent['dt']))}'),
+              child: Text(
+                'Weather Summary - ${dateTimeToHumanReadable(convertToLocationLocalTime(detailedLocationForecastData.lat, detailedLocationForecastData.lon, detailedLocationForecastDataCurrent['dt']))}',
+                style: const TextStyle(
+                    color: Color(0xFF454259), fontWeight: FontWeight.bold),
+              ),
             ),
             horizontalDivider(),
             Column(
@@ -554,8 +569,10 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                       Flexible(
                         fit: FlexFit.loose,
                         child: Text(
-                          'Current Temp: ${(detailedLocationForecastDataCurrent['temp'] / 1).floor()}\u{00B0}',
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          'Temp: ${(detailedLocationForecastDataCurrent['temp'] / 1).floor()}\u{00B0}',
+                          style: const TextStyle(
+                            color: Color(0xFF454259),
+                            fontWeight: FontWeight.bold,),
                         ),
                       ),
                       // feels like
@@ -563,18 +580,13 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                         fit: FlexFit.loose,
                         child: Text(
                           'Feels Like: ${(detailedLocationForecastDataCurrent['feels_like'] / 1).floor()}\u{00B0}',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ),
-                      // Last 3 Days Snowfall
-                      Flexible(
-                        fit: FlexFit.loose,
-                        child: Text(
-                          'Prev. 72hr Snowfall: $previous3DaySnowFallIn in',
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style: const TextStyle(
+                            color: Color(0xFF454259),
+                            fontWeight: FontWeight.bold,),
                         ),
                       ),
                     ]),
+                const SizedBox(height: 15.0,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -583,7 +595,9 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                       fit: FlexFit.loose,
                       child: Text(
                         'Humidity: ${detailedLocationForecastDataCurrent['humidity']}%',
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        style: const TextStyle(
+                          color: Color(0xFF454259),
+                          fontWeight: FontWeight.bold,),
                       ),
                     ),
                     // wind
@@ -591,18 +605,37 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
                       fit: FlexFit.loose,
                       child: Text(
                         'Wind: ${detailedLocationForecastDataCurrent['wind_speed']} mph ${getWindDirectionFromDeg(detailedLocationForecastDataCurrent['wind_deg'])}',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: Text(
-                        'Weather: ${detailedLocationForecastDataCurrent['weather'][0]['description']}',
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        style: const TextStyle(
+                          color: Color(0xFF454259),
+                          fontWeight: FontWeight.bold,),
                       ),
                     ),
                   ],
-                )
+                ),
+                const SizedBox(height: 15.0,),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Text(
+                          'Weather: ${detailedLocationForecastDataCurrent['weather'][0]['description']}',
+                          style: const TextStyle(
+                            color: Color(0xFF454259),
+                            fontWeight: FontWeight.bold,),
+                        ),
+                      ),
+                      // Last 3 Days Snowfall
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Text(
+                          'Prev. 72hr Snowfall: $previous3DaySnowFallIn in',
+                          style: const TextStyle(
+                            color: Color(0xFF454259),
+                            fontWeight: FontWeight.bold,),
+                        ),
+                      ),
+                    ])
               ],
             ),
           ],
@@ -621,7 +654,11 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
           Container(
             padding: const EdgeInsets.only(left: 10.0),
             alignment: Alignment.centerLeft,
-            child: const Text('6 Day Forecast'),
+            child: const Text(
+              '6 Day Forecast',
+              style: TextStyle(
+                  color: Color(0xFF454259), fontWeight: FontWeight.bold),
+            ),
           ),
           horizontalDivider(),
           ListView.separated(
@@ -669,31 +706,33 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
             Expanded(
               child: Text(
                 getDayOfWeek(index),
-                style: Theme.of(context).textTheme.subtitle1,
+                style: const TextStyle(
+                  color: Color(0xFF454259),
+                  fontWeight: FontWeight.bold,),
               ),
             ),
             // Precipitation probability
             Flexible(
+              fit: FlexFit.tight,
               child: Text(
-                'Chance of Snow\n${detailedLocationForecastDataWWO.dailyWeather[index]['chanceofsnow']}%',
+                'Snow Chance\n${detailedLocationForecastDataWWO.dailyWeather[index]['chanceofsnow']}%',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
             ),
             // temperatures
             Flexible(
-              child: FittedBox(
-                fit: BoxFit.fitWidth,
-                child: Text(
-                  'Temperature\n Min: $avgMin \nMax: $avgMax',
+              fit: FlexFit.tight,
+              child: Text(
+                  'Min: $avgMin \nMax: $avgMax',
                   style: Theme.of(context).textTheme.subtitle1,
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.left,
                 ),
               ),
-            ),
             // snowfall
             Flexible(
+              fit: FlexFit.tight,
               child: Text(
-                'Precipitation\n$weatherType $dailyQpf',
+                '$weatherType $dailyQpf in',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
             ),
@@ -713,12 +752,11 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
         });
   }
 
-
   /*------------------------------------
   *           TWITTER
   * ----------------------------------*/
 
-  Widget twitterTimeLineWidget () {
+  Widget twitterTimeLineWidget() {
     return ListView.builder(
         padding: const EdgeInsets.all(10.0),
         primary: false,
@@ -726,17 +764,16 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
         itemCount: tweetsList.length,
         itemBuilder: (context, index) {
           var tempTweet = jsonDecode(tweetsList[index]);
-          var tempTime = DateTime.parse(tempTweet['created_at']).toLocal().toString();
+          var tempTime =
+              DateTime.parse(tempTweet['created_at']).toLocal().toString();
           tempTweet['created_at'] = tempTime;
           return EmbeddedTweetView.fromTweetV2(
             TweetV2Response(
               data: tempTweet,
             ),
-            showRepliesCount: true,
           );
         });
   }
-
 
   /*------------------------------------
   *           GETTERS
@@ -753,25 +790,41 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
   get resortTwitterUserName => widget.resortTwitterUserName;
 
   get resortState => widget.resortState;
+
   get resortRoadConditions => widget.resortRoadConditions;
-  get previousWeatherWWO => detailedLocationForecastDataWWO.previous3DaysWeather['data']['weather'];
+
+  get previousWeatherWWO =>
+      detailedLocationForecastDataWWO.previous3DaysWeather['data']['weather'];
+
   get resortForecastArea => widget.resortForecastArea;
+
   get forecastDiscussionLink => widget.resortForecastDiscussionLink;
+
   get resortWebsite => widget.resortWebsite;
+
   get resortTrailMaps => widget.resortTrailMaps;
+
   get liftTerrainStatus => widget.liftTerrainStatus;
+
   /*------------------------------------
   *           FORMAT WIDGETS
   * ----------------------------------*/
   Widget formattingWidget(Widget widget) {
     /// adds consistent padding and borders to widgets on detailedForecastScreen page
     return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-            decoration:
-                BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-            alignment: Alignment.center,
-            child: widget));
+        padding: const EdgeInsets.all(10.0),
+        child: Card(
+          elevation: 10.0,
+          shadowColor: const Color(0xFF7686A6),
+          color: const Color(0xBFFFB7AD),
+          child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                color: const Color(0xFF7686A6),
+              )),
+              alignment: Alignment.center,
+              child: widget),
+        ));
   }
 
   Widget horizontalDivider() {
@@ -781,8 +834,7 @@ class _DetailedForecastScreenState extends State<DetailedForecastScreen> {
       thickness: 1,
       indent: 10,
       endIndent: 10,
-      color: Colors.grey,
+      color: Color(0xFF2F2C40),
     );
   }
 } // class _DetailedAllWeatherViewState extends State<DetailedAllWeatherView>
-

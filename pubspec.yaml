@@ -34,7 +34,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_auth: ^4.2.0
   firebase_core: ^2.4.0
-  sqflite: ^2.2.2
   persistent_bottom_nav_bar: any
   weather: 2.0.1
   dynamic_weather_icons: 1.2.0
@@ -54,6 +53,7 @@ dependencies:
   syncfusion_flutter_charts: ^20.4.38
   webview_flutter: ^4.0.1
   twitter_api_v2: ^4.8.1
+  dart_twitter_api: ^0.5.8
   tweet_ui: ^4.0.4
   url_launcher: ^6.1.7
   firebase_storage: ^11.0.10
